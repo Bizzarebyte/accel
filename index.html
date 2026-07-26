@@ -32,17 +32,17 @@
     overflow-x:hidden;
   }
   .mono{ font-family: 'SFMono-Regular', ui-monospace, 'Courier New', monospace; }
-
+ 
   header{ width:100%; max-width:480px; padding: 22px 4px 8px; }
   .brand{ font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-dim); }
   .brand b{ color:var(--ink); font-weight:600; }
-
+ 
   .dial-wrap{
     width:100%; max-width:480px;
     display:flex; flex-direction:column; align-items:center;
     margin-top: 18px;
   }
-
+ 
   .ring{
     position:relative;
     width: min(72vw, 320px);
@@ -74,9 +74,9 @@
   .speed-num{ font-size: 64px; font-weight:700; line-height:1; color:var(--ink); letter-spacing:-0.02em; }
   .speed-unit{ font-size:15px; color:var(--ink-dim); margin-top:6px; letter-spacing:.06em; }
   .speed-label{ font-size:13px; color:var(--accent, var(--calm)); margin-top:10px; text-transform:uppercase; letter-spacing:.12em; font-weight:600; }
-
+ 
   .controls{ width:100%; max-width:480px; margin-top: 30px; display:flex; flex-direction:column; gap:14px; }
-
+ 
   .row{ display:flex; gap:10px; }
   button.seg{
     flex:1; padding:10px 8px; border-radius:10px; border:1px solid var(--line);
@@ -84,7 +84,7 @@
     letter-spacing:.03em; cursor:pointer; transition: all .15s ease;
   }
   button.seg.active{ background: rgba(63,214,184,0.12); border-color: var(--accent, var(--calm)); color: var(--ink); }
-
+ 
   .main-btn{
     width:100%; padding:18px; border-radius:14px; border:none;
     background: var(--calm); color:#04120e; font-size:16px; font-weight:700;
@@ -92,9 +92,9 @@
   }
   .main-btn:active{ transform: scale(0.98); }
   .main-btn.stop{ background: var(--fast); color:#2a0606; }
-
+ 
   .status{ font-size:12.5px; color:var(--ink-dim); text-align:center; min-height:18px; }
-
+ 
   .bands{
     width:100%; max-width:480px; margin-top:24px;
     border:1px solid var(--line); border-radius:14px; overflow:hidden;
@@ -108,12 +108,12 @@
   .band .dot{ width:8px; height:8px; border-radius:50%; margin-right:10px; display:inline-block; }
   .band .name{ display:flex; align-items:center; color:var(--ink); }
   .band .range{ color: var(--ink-dim); font-family: ui-monospace, monospace; }
-
+ 
   details{ width:100%; max-width:480px; margin-top:20px; color:var(--ink-dim); font-size:13px; }
   summary{ cursor:pointer; padding:10px 2px; color:var(--ink); font-weight:600; }
   details p{ line-height:1.55; margin: 6px 2px 14px; }
   details ol{ margin:6px 2px 14px; padding-left:18px; line-height:1.6; }
-
+ 
   footer{ margin-top:auto; padding-top:24px; font-size:11px; color:#4a5157; text-align:center; }
 </style>
 </head>
@@ -121,7 +121,7 @@
   <header>
     <div class="brand"><b>Velocitone</b> — motion engine sound</div>
   </header>
-
+ 
   <div class="dial-wrap">
     <div class="ring" id="ring">
       <div class="pulse" id="pulse"></div>
@@ -132,28 +132,28 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="controls">
     <button class="main-btn" id="toggleBtn">Start engine</button>
     <div class="status" id="status">Tap start to play the startup sound.</div>
   </div>
-
+ 
   <div class="bands">
     <div class="band"><span class="name"><span class="dot" style="background:#4a5157"></span>Idle</span><span class="range mono">Low acceleration</span></div>
     <div class="band"><span class="name"><span class="dot" style="background:var(--calm)"></span>Light throttle</span><span class="range mono">Gentle acceleration</span></div>
     <div class="band"><span class="name"><span class="dot" style="background:var(--brisk)"></span>High RPM</span><span class="range mono">Hard acceleration</span></div>
     <div class="band"><span class="name"><span class="dot" style="background:var(--fast)"></span>Redline</span><span class="range mono">Very hard acceleration</span></div>
   </div>
-
+ 
   <details>
     <summary>How it works</summary>
     <p>Tap Start engine to play the startup sound. After the startup sound finishes, the engine sound begins looping and behaves like a race-car engine: acceleration raises the simulated RPM, while easing off lets the RPM fall gradually.</p>
     <p>This uses the phone's accelerometer, so it reacts to changes in motion rather than measuring actual vehicle speed.</p>
     <p><b>iPhone:</b> Open this page in Safari. Tap Start engine and allow Motion & Orientation Access if prompted.</p>
   </details>
-
+ 
   <footer>Motion sensor only. No GPS is used.</footer>
-
+ 
   <audio id="startupAudio" src="startup.mp3" preload="auto"></audio>
   <audio id="engineAudio" src="Longest Idle.m4a" preload="auto" loop></audio>
 <script>
@@ -166,52 +166,52 @@
   const statusEl = document.getElementById('status');
   const startupAudio = document.getElementById('startupAudio');
   const engineAudio = document.getElementById('engineAudio');
-
+ 
   let running = false;
   let motionHandler = null;
   let smoothedAccel = 0;
   let rpm = 0;
   let engineStarted = false;
-
+ 
   const IDLE_RATE = 0.92;
   const MAX_RATE = 2.25;
   const ACCEL_RESPONSE = 0.18;
   const RPM_FALL = 0.035;
-
+ 
   function updateEngine(accel){
     const throttle = Math.max(0, Math.min(1, (accel - 0.15) / 5.5));
-
+ 
     rpm += (throttle - rpm) * ACCEL_RESPONSE;
-
+ 
     if(throttle < 0.05){
       rpm *= (1 - RPM_FALL);
     }
-
+ 
     engineAudio.playbackRate =
       IDLE_RATE + rpm * (MAX_RATE - IDLE_RATE);
-
+ 
     accelNum.textContent = accel.toFixed(1);
-
+ 
     let label;
     if(rpm < 0.18) label = 'IDLE';
     else if(rpm < 0.45) label = 'LOW RPM';
     else if(rpm < 0.75) label = 'HIGH RPM';
     else label = 'REDLINE';
-
+ 
     accelLabel.textContent = label;
-
+ 
     const colors = ['#4a5157','#3fd6b8','#f2b544','#ef5b5b'];
     const idx = rpm < 0.18 ? 0 : rpm < 0.45 ? 1 : rpm < 0.75 ? 2 : 3;
-
+ 
     ring.style.setProperty('--accent', colors[idx]);
     pulse.style.setProperty('--accent', colors[idx]);
     ring.style.setProperty('--pct', (rpm * 100).toFixed(1));
     pulse.style.setProperty('--pulse-scale', (1 + rpm * 0.12).toFixed(3));
   }
-
+ 
   function onMotion(evt){
     let ax, ay, az;
-
+ 
     if(evt.acceleration &&
        evt.acceleration.x !== null &&
        evt.acceleration.x !== undefined){
@@ -220,38 +220,40 @@
       az = evt.acceleration.z || 0;
     } else if(evt.accelerationIncludingGravity){
       const g = evt.accelerationIncludingGravity;
-
+ 
       if(!window.gravity){
         window.gravity = {x:0,y:0,z:0};
       }
-
+ 
       const alpha = 0.9;
       window.gravity.x = alpha * window.gravity.x + (1-alpha) * (g.x || 0);
       window.gravity.y = alpha * window.gravity.y + (1-alpha) * (g.y || 0);
       window.gravity.z = alpha * window.gravity.z + (1-alpha) * (g.z || 0);
-
+ 
       ax = (g.x || 0) - window.gravity.x;
       ay = (g.y || 0) - window.gravity.y;
       az = (g.z || 0) - window.gravity.z;
     } else {
       return;
     }
-
+ 
     const magnitude = Math.sqrt(ax*ax + ay*ay + az*az);
-
+ 
     smoothedAccel =
       smoothedAccel * 0.72 + magnitude * 0.28;
-
+ 
     if(engineStarted){
-      statusEl.textContent = 'Engine running — motion sensor active';
+      if(!engineAudio.paused){
+        statusEl.textContent = 'Engine running — motion sensor active';
+      }
       updateEngine(smoothedAccel);
     }
   }
-
+ 
   function startMotion(){
     if(typeof DeviceMotionEvent !== 'undefined' &&
        typeof DeviceMotionEvent.requestPermission === 'function'){
-
+ 
       DeviceMotionEvent.requestPermission().then(function(result){
         if(result === 'granted'){
           motionHandler = onMotion;
@@ -265,7 +267,7 @@
         statusEl.textContent =
           'Motion permission error: ' + err.message;
       });
-
+ 
     } else if('DeviceMotionEvent' in window){
       motionHandler = onMotion;
       window.addEventListener('devicemotion', motionHandler);
@@ -275,18 +277,18 @@
         'Motion sensors are not available on this device/browser.';
     }
   }
-
+ 
   function stopMotion(){
     if(motionHandler){
       window.removeEventListener('devicemotion', motionHandler);
       motionHandler = null;
     }
   }
-
+ 
   // Start engine only after the startup sound has fully finished.
   startupAudio.addEventListener('ended', async function(){
     if(!running) return;
-
+ 
     try{
       engineAudio.currentTime = 0;
       engineAudio.loop = true;
@@ -300,21 +302,35 @@
         'Could not play engine sound: ' + e.message;
     }
   });
-
+ 
   toggleBtn.addEventListener('click', async function(){
     if(!running){
       running = true;
       engineStarted = false;
       rpm = 0;
       smoothedAccel = 0;
-
+ 
       toggleBtn.textContent = 'Stop engine';
       toggleBtn.classList.add('stop');
       statusEl.textContent = 'Starting engine…';
-
+ 
       // Start motion permission from the same user gesture.
       startMotion();
-
+ 
+      // iOS Safari only allows audio.play() from code (like our later
+      // "ended" handler) if that element has already been played once
+      // directly from a user gesture. So "unlock" engineAudio here,
+      // muted and instantly paused, using this real tap.
+      try{
+        engineAudio.muted = true;
+        await engineAudio.play();
+        engineAudio.pause();
+        engineAudio.currentTime = 0;
+        engineAudio.muted = false;
+      }catch(e){
+        // If this fails we'll surface it later when the real play() runs.
+      }
+ 
       // Play startup sound first. The engine sound waits for "ended".
       try{
         startupAudio.currentTime = 0;
@@ -323,31 +339,31 @@
         statusEl.textContent =
           'Could not play startup sound: ' + e.message;
       }
-
+ 
     }else{
       running = false;
       engineStarted = false;
-
+ 
       stopMotion();
-
+ 
       startupAudio.pause();
       startupAudio.currentTime = 0;
-
+ 
       engineAudio.pause();
       engineAudio.currentTime = 0;
       engineAudio.playbackRate = IDLE_RATE;
-
+ 
       rpm = 0;
       smoothedAccel = 0;
-
+ 
       accelNum.textContent = '0.0';
       accelLabel.textContent = 'IDLE';
-
+ 
       toggleBtn.textContent = 'Start engine';
       toggleBtn.classList.remove('stop');
-
+ 
       statusEl.textContent = 'Stopped.';
-
+ 
       ring.style.setProperty('--accent', '#4a5157');
       pulse.style.setProperty('--accent', '#4a5157');
       ring.style.setProperty('--pct', 0);
@@ -356,7 +372,7 @@
   });
 })();
 </script>
-
-
+ 
+ 
 </body>
 </html>
