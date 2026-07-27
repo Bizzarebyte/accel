@@ -147,7 +147,7 @@
 
   <details>
     <summary>How it works</summary>
-    <p>Tap Start engine to play the startup sound. After the startup sound finishes, the engine loop plays continuously, and its volume steps up through 5 levels as you accelerate harder — from a quieter idle up to full volume at redline.</p>
+    <p>Tap Start engine to play the startup sound. After the startup sound finishes, the engine loop plays continuously — its pitch eases up and down like real RPM as you accelerate and coast, and its volume also steps up through 5 levels as you push harder, from a quieter idle up to full volume at redline.</p>
     <p>This uses the phone's accelerometer, so it reacts to changes in motion rather than measuring actual vehicle speed.</p>
     <p><b>iPhone:</b> Open this page in Safari. Tap Start engine and allow Motion & Orientation Access if prompted.</p>
   </details>
@@ -171,6 +171,7 @@
   let motionHandler = null;
   let smoothedAccel = 0;
   let engineStarted = false;
+  let rpm = 0; // 0..1 eased "engine speed" used for pitch
 
   // Band edges across the 0–5 accelerometer range. 5 levels -> 5 volumes.
   // Band i covers [BAND_EDGES[i], BAND_EDGES[i+1]).
@@ -188,6 +189,15 @@
 
   // Volume ramp time in ms.
   const FADE_MS = 220;
+
+  // Pitch (playbackRate) range — idle vs redline.
+  const IDLE_RATE = 0.9;
+  const MAX_RATE = 1.85;
+
+  // How quickly rpm eases toward the current throttle target (higher = snappier revving).
+  const RPM_RISE = 0.12;
+  // How quickly rpm falls back down when you ease off the throttle.
+  const RPM_FALL = 0.045;
 
   let currentBand = 0;
   let pendingBand = null;
@@ -254,6 +264,19 @@
       }
     } else {
       pendingBand = null;
+    }
+
+    // Continuous "rev" pitch: eases toward the current throttle level,
+    // and decays back down on its own when you're not accelerating —
+    // just like a real engine's RPM needle.
+    const throttle = Math.max(0, Math.min(1, accel / BAND_EDGES[BAND_EDGES.length - 2]));
+    if(throttle > rpm){
+      rpm += (throttle - rpm) * RPM_RISE;
+    } else {
+      rpm += (throttle - rpm) * RPM_FALL;
+    }
+    if(engineStarted){
+      engineAudio.playbackRate = IDLE_RATE + rpm * (MAX_RATE - IDLE_RATE);
     }
 
     const pct = Math.max(0, Math.min(1, accel / BAND_EDGES[BAND_EDGES.length - 2]));
@@ -344,9 +367,11 @@
 
     try{
       currentBand = 0;
+      rpm = 0;
       engineAudio.currentTime = 0;
       engineAudio.loop = true;
       engineAudio.volume = BAND_VOLUMES[0];
+      engineAudio.playbackRate = IDLE_RATE;
       engineStarted = true;
       await engineAudio.play();
       statusEl.textContent =
@@ -412,6 +437,8 @@
       engineAudio.pause();
       engineAudio.currentTime = 0;
       engineAudio.volume = 0;
+      engineAudio.playbackRate = IDLE_RATE;
+      rpm = 0;
       currentBand = 0;
       pendingBand = null;
       smoothedAccel = 0;
