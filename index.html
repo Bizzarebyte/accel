@@ -152,7 +152,7 @@
 
   <footer>Motion sensor only. No GPS is used.</footer>
 
-  <audio id="startupAudio" src="startup.mp3" preload="auto"></audio>
+  <audio id="startupAudio" src="startup.m4a" preload="auto"></audio>
   <audio id="idleAudio" src="Longest Idle.m4a" preload="auto" loop></audio>
   <audio id="revAudio" src="rev.mp3" preload="auto" loop></audio>
 <script>
@@ -173,9 +173,8 @@
   let engineStarted = false;
 
   // Any accel above this counts as "accelerating" and plays rev.mp3.
-  // A small dead zone above 0 avoids constant sensor-noise flicker.
-  const ACCEL_ON = 0.08;
-  const ACCEL_OFF = 0.03; // must drop clearly below ACCEL_ON to go back to idle
+  const ACCEL_ON = 3;
+  const ACCEL_OFF = 2.7; // must drop clearly below ACCEL_ON to go back to idle
 
   // How long (ms) the new state must be sustained before switching.
   const SWITCH_DELAY = 80;
