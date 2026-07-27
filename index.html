@@ -3,291 +3,410 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#090b0d">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+
+>
+
+<meta
+name="apple-mobile-web-app-capable"
+content="yes"
+
+>
+
+<meta
+name="apple-mobile-web-app-status-bar-style"
+content="black-translucent"
+
+>
+
+<meta
+name="mobile-web-app-capable"
+content="yes"
+
+>
+
+<meta
+name="theme-color"
+content="#090b0d"
+
+>
 
 <title>Velocitone Motion Engine</title>
 
 <style>
-  :root{
-    --bg: #090b0d;
-    --panel: #12161a;
-    --line: #22282e;
-    --ink: #eef2f4;
-    --ink-dim: #8a949c;
-    --calm: #3fd6b8;
-    --brisk: #f2b544;
-    --fast: #ef5b5b;
-  }
 
-  *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-  }
+:root {
+  --bg: #090b0d;
+  --panel: #12161a;
+  --line: #22282e;
+  --ink: #eef2f4;
+  --ink-dim: #8a949c;
+  --idle: #4a5157;
+  --brisk: #f2b544;
+  --fast: #ef5b5b;
+}
 
-  html,
-  body{
-    height:100%;
-  }
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    min-height:100vh;
-    padding:
-      env(safe-area-inset-top)
-      18px
-      calc(env(safe-area-inset-bottom) + 18px);
-    overflow-x:hidden;
-  }
+html,
+body {
+  min-height: 100%;
+}
 
-  .mono{
-    font-family:'SFMono-Regular',ui-monospace,'Courier New',monospace;
-  }
+body {
+  margin: 0;
 
-  header{
-    width:100%;
-    max-width:480px;
-    padding:22px 4px 8px;
-  }
+  background: var(--bg);
+  color: var(--ink);
 
-  .brand{
-    font-size:13px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--ink-dim);
-  }
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
 
-  .brand b{
-    color:var(--ink);
-    font-weight:600;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  .dial-wrap{
-    width:100%;
-    max-width:480px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    margin-top:18px;
-  }
+  min-height: 100vh;
 
-  .ring{
-    position:relative;
-    width:min(72vw,320px);
-    height:min(72vw,320px);
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  padding:
+    env(safe-area-inset-top)
+    18px
+    calc(env(safe-area-inset-bottom) + 18px);
 
-    background:
-      radial-gradient(
-        circle at 50% 42%,
-        rgba(255,255,255,0.03),
-        transparent 60%
-      );
+  overflow-x: hidden;
+}
 
-    border:1px solid var(--line);
+.mono {
+  font-family:
+    "SFMono-Regular",
+    ui-monospace,
+    "Courier New",
+    monospace;
+}
 
-    transition:
-      box-shadow .25s ease,
-      border-color .25s ease;
-  }
+/* HEADER */
 
-  .ring::before{
-    content:'';
-    position:absolute;
-    inset:-1px;
-    border-radius:50%;
-    padding:2px;
+header {
+  width: 100%;
+  max-width: 480px;
+  padding: 22px 4px 8px;
+}
 
-    background:
-      conic-gradient(
-        var(--accent,var(--calm))
-        calc(var(--pct,0) * 1%),
-        transparent 0
-      );
+.brand {
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
 
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
+.brand b {
+  color: var(--ink);
+  font-weight: 600;
+}
 
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
+/* DIAL */
 
-    transition:
-      background .15s linear;
-  }
+.dial-wrap {
+  width: 100%;
+  max-width: 480px;
 
-  .ring .pulse{
-    position:absolute;
-    inset:14px;
-    border-radius:50%;
-    border:1px solid var(--accent,var(--calm));
-    opacity:.25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    transform:
-      scale(var(--pulse-scale,1));
+  margin-top: 18px;
+}
 
-    transition:
-      transform .12s ease-out,
-      border-color .25s ease;
-  }
+.ring {
+  position: relative;
 
-  .speed-num{
-    font-size:64px;
-    font-weight:700;
-    line-height:1;
-    color:var(--ink);
-    letter-spacing:-.02em;
-  }
+  width: min(72vw, 320px);
+  height: min(72vw, 320px);
 
-  .speed-unit{
-    font-size:15px;
-    color:var(--ink-dim);
-    margin-top:6px;
-    letter-spacing:.06em;
-  }
+  border-radius: 50%;
 
-  .speed-label{
-    font-size:13px;
-    color:var(--accent,var(--calm));
-    margin-top:10px;
-    text-transform:uppercase;
-    letter-spacing:.12em;
-    font-weight:600;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  .controls{
-    width:100%;
-    max-width:480px;
-    margin-top:30px;
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-  }
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255,255,255,.03),
+      transparent 60%
+    );
 
-  .main-btn{
-    width:100%;
-    padding:18px;
-    border-radius:14px;
-    border:none;
+  border: 1px solid var(--line);
 
-    background:var(--calm);
-    color:#04120e;
+  transition:
+    box-shadow .25s ease,
+    border-color .25s ease;
+}
 
-    font-size:16px;
-    font-weight:700;
-    letter-spacing:.02em;
+.ring::before {
+  content: "";
 
-    cursor:pointer;
+  position: absolute;
+  inset: -1px;
 
-    transition:
-      background .2s ease,
-      transform .08s ease;
-  }
+  border-radius: 50%;
 
-  .main-btn:active{
-    transform:scale(.98);
-  }
+  padding: 2px;
 
-  .main-btn.stop{
-    background:var(--fast);
-    color:#2a0606;
-  }
+  background:
+    conic-gradient(
+      var(--accent, var(--idle))
+      calc(var(--pct, 0) * 1%),
+      transparent 0
+    );
 
-  .main-btn:disabled{
-    opacity:.7;
-    cursor:wait;
-  }
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
 
-  .status{
-    font-size:12.5px;
-    color:var(--ink-dim);
-    text-align:center;
-    min-height:18px;
-    line-height:1.4;
-  }
+  -webkit-mask-composite: xor;
 
-  .bands{
-    width:100%;
-    max-width:480px;
-    margin-top:24px;
-    border:1px solid var(--line);
-    border-radius:14px;
-    overflow:hidden;
-  }
+  mask-composite: exclude;
+}
 
-  .band{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:12px 16px;
-    font-size:13px;
-    border-bottom:1px solid var(--line);
-    background:var(--panel);
-  }
+.pulse {
+  position: absolute;
 
-  .band:last-child{
-    border-bottom:none;
-  }
+  inset: 14px;
 
-  .band .dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    margin-right:10px;
-    display:inline-block;
-  }
+  border-radius: 50%;
 
-  .band .name{
-    display:flex;
-    align-items:center;
-    color:var(--ink);
-  }
+  border:
+    1px solid var(--accent, var(--idle));
 
-  .band .range{
-    color:var(--ink-dim);
-    font-family:ui-monospace,monospace;
-  }
+  opacity: .25;
 
-  details{
-    width:100%;
-    max-width:480px;
-    margin-top:20px;
-    color:var(--ink-dim);
-    font-size:13px;
-  }
+  transform:
+    scale(var(--pulse-scale, 1));
 
-  summary{
-    cursor:pointer;
-    padding:10px 2px;
-    color:var(--ink);
-    font-weight:600;
-  }
+  transition:
+    transform .12s ease-out,
+    border-color .25s ease;
+}
 
-  details p{
-    line-height:1.55;
-    margin:6px 2px 14px;
-  }
+.speed-num {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
 
-  footer{
-    margin-top:auto;
-    padding-top:24px;
-    font-size:11px;
-    color:#4a5157;
-    text-align:center;
-  }
+  color: var(--ink);
+
+  letter-spacing: -.02em;
+}
+
+.speed-unit {
+  font-size: 15px;
+
+  color: var(--ink-dim);
+
+  margin-top: 6px;
+
+  letter-spacing: .06em;
+}
+
+.speed-label {
+  font-size: 13px;
+
+  color: var(--accent, var(--idle));
+
+  margin-top: 10px;
+
+  text-transform: uppercase;
+
+  letter-spacing: .12em;
+
+  font-weight: 600;
+}
+
+/* CONTROLS */
+
+.controls {
+  width: 100%;
+  max-width: 480px;
+
+  margin-top: 30px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.main-btn {
+  width: 100%;
+
+  padding: 18px;
+
+  border-radius: 14px;
+
+  border: none;
+
+  background: #3fd6b8;
+
+  color: #04120e;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  letter-spacing: .02em;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    transform .08s ease,
+    opacity .2s ease;
+}
+
+.main-btn:active {
+  transform: scale(.98);
+}
+
+.main-btn.stop {
+  background: var(--fast);
+  color: #2a0606;
+}
+
+.main-btn:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+.status {
+  font-size: 12.5px;
+
+  color: var(--ink-dim);
+
+  text-align: center;
+
+  min-height: 18px;
+
+  line-height: 1.5;
+}
+
+/* BANDS */
+
+.bands {
+  width: 100%;
+  max-width: 480px;
+
+  margin-top: 24px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+.band {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 12px 16px;
+
+  font-size: 13px;
+
+  border-bottom:
+    1px solid var(--line);
+
+  background: var(--panel);
+}
+
+.band:last-child {
+  border-bottom: none;
+}
+
+.band .dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  margin-right: 10px;
+
+  display: inline-block;
+}
+
+.band .name {
+  display: flex;
+
+  align-items: center;
+
+  color: var(--ink);
+}
+
+.band .range {
+  color: var(--ink-dim);
+
+  font-family:
+    ui-monospace,
+    monospace;
+}
+
+/* DETAILS */
+
+details {
+  width: 100%;
+  max-width: 480px;
+
+  margin-top: 20px;
+
+  color: var(--ink-dim);
+
+  font-size: 13px;
+}
+
+summary {
+  cursor: pointer;
+
+  padding: 10px 2px;
+
+  color: var(--ink);
+
+  font-weight: 600;
+}
+
+details p {
+  line-height: 1.55;
+
+  margin:
+    6px 2px 14px;
+}
+
+/* FOOTER */
+
+footer {
+  margin-top: auto;
+
+  padding-top: 24px;
+
+  font-size: 11px;
+
+  color: #4a5157;
+
+  text-align: center;
+}
+
 </style>
 
 </head>
@@ -295,24 +414,40 @@
 <body>
 
 <header>
+
   <div class="brand">
     <b>Velocitone</b> — motion engine sound
   </div>
+
 </header>
 
 <div class="dial-wrap">
 
-  <div class="ring" id="ring">
+  <div
+    class="ring"
+    id="ring"
+  >
 
 ```
-<div class="pulse" id="pulse"></div>
+<div
+  class="pulse"
+  id="pulse"
+></div>
 
-<div style="text-align:center; position:relative; z-index:2;">
+<div
+  style="
+    text-align:center;
+    position:relative;
+    z-index:2;
+  "
+>
 
   <div
     class="speed-num mono"
     id="accelNum"
-  >0.0</div>
+  >
+    0.0
+  </div>
 
   <div class="speed-unit">
     M/S²
@@ -321,7 +456,9 @@
   <div
     class="speed-label"
     id="accelLabel"
-  >IDLE</div>
+  >
+    IDLE
+  </div>
 
 </div>
 ```
@@ -348,7 +485,7 @@ Start engine
     class="status"
     id="status"
   >
-    Tap start to play the startup sound.
+    Tap Start engine to begin.
   </div>
 
 </div>
@@ -359,12 +496,14 @@ Start engine
 
 ```
 <span class="name">
+
   <span
     class="dot"
     style="background:#4a5157"
   ></span>
 
   Idle
+
 </span>
 
 <span class="range mono">
@@ -378,12 +517,14 @@ Start engine
 
 ```
 <span class="name">
+
   <span
     class="dot"
-    style="background:var(--brisk)"
+    style="background:#f2b544"
   ></span>
 
   Accelerating
+
 </span>
 
 <span class="range mono">
@@ -403,21 +544,21 @@ Start engine
 
   <p>
     Tap Start engine to play the startup sound.
-    After startup, the idle sound loops automatically.
-    When the motion sensor detects sustained acceleration,
-    the engine smoothly crossfades into the rev sound.
-    When acceleration drops back down, it crossfades to idle.
+    When startup finishes, the idle engine sound begins looping.
+    When the phone detects sustained acceleration, the system
+    crossfades from idle into the rev sound.
+    When acceleration decreases, it crossfades back to idle.
   </p>
 
   <p>
-    This uses the phone's accelerometer, so it reacts to
-    changes in motion rather than measuring actual vehicle speed.
+    This uses the phone's motion sensor.
+    It does not use GPS or measure actual vehicle speed.
   </p>
 
   <p>
     <b>iPhone:</b>
-    Open this page in Safari. Tap Start engine and allow
-    Motion & Orientation Access if prompted.
+    Open this page in Safari and tap Start engine.
+    Allow Motion & Orientation Access if prompted.
   </p>
 
 </details>
@@ -426,26 +567,26 @@ Start engine
   Motion sensor only. No GPS is used.
 </footer>
 
-<!--
-  AUDIO FILES
+<!-- =====================================================
+     AUDIO FILES
 
-  Keep these files in the same folder as this HTML file:
+     These files MUST be in the same folder as index.html:
 
-  startup.m4a
-  Longest Idle.m4a
-  rev.mp3
--->
+     startup.m4a
+     Longest Idle.m4a
+     rev.m4a
+===================================================== -->
 
 <audio
 id="startupAudio"
-src="startup.m4a"
+src="./startup.m4a"
 preload="auto"
 
 > </audio>
 
 <audio
 id="idleAudio"
-src="Longest Idle.m4a"
+src="./Longest%20Idle.m4a"
 preload="auto"
 loop
 
@@ -453,67 +594,66 @@ loop
 
 <audio
 id="revAudio"
-src="rev.m4a"
+src="./rev.m4a"
 preload="auto"
 loop
 
 > </audio>
 
 <script>
-(function(){
 
-  /* =========================================================
-     ELEMENTS
-  ========================================================= */
+(function () {
 
-  const accelNum =
-    document.getElementById('accelNum');
+  "use strict";
 
-  const accelLabel =
-    document.getElementById('accelLabel');
+
+  /* =====================================================
+     GET HTML ELEMENTS
+  ===================================================== */
 
   const ring =
-    document.getElementById('ring');
+    document.getElementById("ring");
 
   const pulse =
-    document.getElementById('pulse');
+    document.getElementById("pulse");
+
+  const accelNum =
+    document.getElementById("accelNum");
+
+  const accelLabel =
+    document.getElementById("accelLabel");
 
   const toggleBtn =
-    document.getElementById('toggleBtn');
+    document.getElementById("toggleBtn");
 
   const statusEl =
-    document.getElementById('status');
+    document.getElementById("status");
 
   const startupAudio =
-    document.getElementById('startupAudio');
+    document.getElementById("startupAudio");
 
   const idleAudio =
-    document.getElementById('idleAudio');
+    document.getElementById("idleAudio");
 
   const revAudio =
-    document.getElementById('revAudio');
+    document.getElementById("revAudio");
 
 
-  /* =========================================================
-     ENGINE STATE
-  ========================================================= */
+  /* =====================================================
+     STATE
+  ===================================================== */
 
   let running = false;
 
-  let engineStarted = false;
+  let startupFinished = false;
 
   let isRevving = false;
 
   let motionHandler = null;
 
-  let motionPermissionGranted = false;
+  let motionAvailable = false;
 
-
-  /* =========================================================
-     MOTION FILTERING
-  ========================================================= */
-
-  let smoothedAccel = 0;
+  let smoothedAcceleration = 0;
 
   let gravity = {
     x: 0,
@@ -521,70 +661,72 @@ loop
     z: 0
   };
 
-  let gravityInitialized = false;
-
-
-  /*
-    These values control how the engine responds.
-
-    ACCEL_ON:
-    Acceleration must rise above this to start revving.
-
-    ACCEL_OFF:
-    Acceleration must fall below this to return to idle.
-
-    Keeping ACCEL_OFF lower than ACCEL_ON prevents
-    rapid switching when the acceleration is near the threshold.
-  */
-
-  const ACCEL_ON = 2.5;
-
-  const ACCEL_OFF = 1.5;
-
-
-  /*
-    The new state must remain stable for this amount
-    of time before switching engine sounds.
-  */
-
-  const SWITCH_DELAY = 180;
-
-
-  /*
-    Audio crossfade duration.
-  */
-
-  const FADE_MS = 250;
-
-
-  /*
-    Filter strength.
-
-    Lower number:
-    More responsive but noisier.
-
-    Higher number:
-    Smoother but slower.
-  */
-
-  const SMOOTHING = 0.18;
-
+  let gravityReady = false;
 
   let pendingState = null;
 
-  let pendingSince = 0;
+  let pendingStateTime = 0;
+
+  let fadeTimers = new Map();
 
 
-  /* =========================================================
-     AUDIO FADE MANAGEMENT
-  ========================================================= */
+  /* =====================================================
+     SETTINGS
+  ===================================================== */
 
-  const fadeTimers = new Map();
+  /*
+    The engine starts revving above this acceleration.
+  */
+
+  const REV_ON =
+    2.5;
 
 
-  function stopFade(track){
+  /*
+    The engine returns to idle below this acceleration.
+  */
 
-    if(fadeTimers.has(track)){
+  const REV_OFF =
+    1.5;
+
+
+  /*
+    How long acceleration must stay in a new state
+    before changing the sound.
+  */
+
+  const STATE_DELAY =
+    200;
+
+
+  /*
+    Crossfade duration.
+  */
+
+  const FADE_TIME =
+    300;
+
+
+  /*
+    Motion smoothing.
+
+    Higher = more responsive.
+    Lower = smoother.
+  */
+
+  const SMOOTHING =
+    0.20;
+
+
+  /* =====================================================
+     AUDIO HELPERS
+  ===================================================== */
+
+  function cancelFade(track) {
+
+    if (
+      fadeTimers.has(track)
+    ) {
 
       clearInterval(
         fadeTimers.get(track)
@@ -597,13 +739,13 @@ loop
   }
 
 
-  function fadeTo(
+  function fadeAudio(
     track,
     targetVolume,
     duration
-  ){
+  ) {
 
-    stopFade(track);
+    cancelFade(track);
 
     const startVolume =
       track.volume;
@@ -613,47 +755,54 @@ loop
 
 
     const timer =
-      setInterval(function(){
+      setInterval(
+        function () {
 
-        const elapsed =
-          performance.now() -
-          startTime;
-
-        const progress =
-          Math.min(
-            1,
-            elapsed / duration
-          );
-
-
-        track.volume =
-          startVolume +
-          (
-            targetVolume -
-            startVolume
-          ) *
-          progress;
+          const progress =
+            Math.min(
+              1,
+              (
+                performance.now() -
+                startTime
+              ) / duration
+            );
 
 
-        if(progress >= 1){
+          track.volume =
+            startVolume +
+            (
+              targetVolume -
+              startVolume
+            ) *
+            progress;
 
-          clearInterval(timer);
 
-          fadeTimers.delete(track);
+          if (
+            progress >= 1
+          ) {
+
+            clearInterval(
+              timer
+            );
+
+            fadeTimers.delete(
+              track
+            );
 
 
-          if(
-            targetVolume === 0 &&
-            !track.paused
-          ){
+            if (
+              targetVolume === 0
+            ) {
 
-            track.pause();
+              track.pause();
+
+            }
 
           }
 
-        }
-
-      }, 20);
+        },
+        20
+      );
 
 
     fadeTimers.set(
@@ -664,22 +813,20 @@ loop
   }
 
 
-  /* =========================================================
-     AUDIO PLAYBACK
-  ========================================================= */
+  async function playAudio(
+    track
+  ) {
 
-  async function safelyPlay(track){
-
-    try{
+    try {
 
       await track.play();
 
       return true;
 
-    }catch(error){
+    } catch (error) {
 
       console.error(
-        'Audio playback error:',
+        "Audio error:",
         error
       );
 
@@ -690,21 +837,27 @@ loop
   }
 
 
-  async function switchEngineState(
-    shouldRev
-  ){
+  /* =====================================================
+     SWITCH IDLE / REV
+  ===================================================== */
 
-    if(!running ||
-       !engineStarted){
+  async function setRevving(
+    revving
+  ) {
+
+    if (
+      !running ||
+      !startupFinished
+    ) {
 
       return;
 
     }
 
 
-    if(
-      shouldRev === isRevving
-    ){
+    if (
+      revving === isRevving
+    ) {
 
       return;
 
@@ -712,43 +865,55 @@ loop
 
 
     isRevving =
-      shouldRev;
+      revving;
 
 
     const nextTrack =
-      shouldRev
+      revving
         ? revAudio
         : idleAudio;
 
 
-    const otherTrack =
-      shouldRev
+    const oldTrack =
+      revving
         ? idleAudio
         : revAudio;
 
 
     /*
-      Start the next track at zero volume.
-
-      This makes the transition smooth.
+      Start the next sound silently,
+      then fade it in.
     */
 
-    if(nextTrack.paused){
+    if (
+      nextTrack.paused
+    ) {
 
-      nextTrack.currentTime = 0;
+      nextTrack.currentTime =
+        0;
 
-      nextTrack.volume = 0;
+      nextTrack.volume =
+        0;
 
-      const started =
-        await safelyPlay(
+
+      const success =
+        await playAudio(
           nextTrack
         );
 
 
-      if(!started){
+      if (
+        !success
+      ) {
 
         statusEl.textContent =
-          'Could not play engine sound.';
+          "Could not play " +
+          (
+            revving
+              ? "rev.m4a"
+              : "Longest Idle.m4a"
+          ) +
+          ".";
 
         return;
 
@@ -757,56 +922,54 @@ loop
     }
 
 
-    /*
-      Crossfade.
-    */
-
-    fadeTo(
+    fadeAudio(
       nextTrack,
       1,
-      FADE_MS
+      FADE_TIME
     );
 
 
-    fadeTo(
-      otherTrack,
+    fadeAudio(
+      oldTrack,
       0,
-      FADE_MS
+      FADE_TIME
     );
 
 
-    /*
-      Update UI.
-    */
-
-    if(shouldRev){
+    if (
+      revving
+    ) {
 
       accelLabel.textContent =
-        'ACCELERATING';
+        "ACCELERATING";
+
 
       ring.style.setProperty(
-        '--accent',
-        '#f2b544'
+        "--accent",
+        "#f2b544"
       );
+
 
       pulse.style.setProperty(
-        '--accent',
-        '#f2b544'
+        "--accent",
+        "#f2b544"
       );
 
-    }else{
+    } else {
 
       accelLabel.textContent =
-        'IDLE';
+        "IDLE";
+
 
       ring.style.setProperty(
-        '--accent',
-        '#4a5157'
+        "--accent",
+        "#4a5157"
       );
 
+
       pulse.style.setProperty(
-        '--accent',
-        '#4a5157'
+        "--accent",
+        "#4a5157"
       );
 
     }
@@ -814,130 +977,193 @@ loop
   }
 
 
-  /* =========================================================
-     ENGINE LOGIC
-  ========================================================= */
+  /* =====================================================
+     MOTION PROCESSING
+  ===================================================== */
 
-  function updateEngine(
+  function processAcceleration(
     acceleration
-  ){
+  ) {
 
     /*
-      Display acceleration.
+      Smooth the raw acceleration.
+    */
+
+    smoothedAcceleration =
+      (
+        smoothedAcceleration *
+        (1 - SMOOTHING)
+      ) +
+      (
+        acceleration *
+        SMOOTHING
+      );
+
+
+    /*
+      Update number.
     */
 
     accelNum.textContent =
-      acceleration.toFixed(1);
-
-
-    /*
-      Determine whether we should rev.
-
-      Hysteresis:
-
-      When idle:
-        Must exceed ACCEL_ON.
-
-      When already revving:
-        Only stop when below ACCEL_OFF.
-    */
-
-    let targetState;
-
-
-    if(isRevving){
-
-      targetState =
-        acceleration >
-        ACCEL_OFF;
-
-    }else{
-
-      targetState =
-        acceleration >
-        ACCEL_ON;
-
-    }
-
-
-    /*
-      If the desired state matches
-      the current state, cancel any
-      pending transition.
-    */
-
-    if(
-      targetState ===
-      isRevving
-    ){
-
-      pendingState = null;
-
-      pendingSince = 0;
-
-      return;
-
-    }
-
-
-    /*
-      Start timing a possible state change.
-    */
-
-    const now =
-      performance.now();
-
-
-    if(
-      pendingState !==
-      targetState
-    ){
-
-      pendingState =
-        targetState;
-
-      pendingSince =
-        now;
-
-      return;
-
-    }
-
-
-    /*
-      Only switch after the new state
-      has remained stable.
-    */
-
-    if(
-      now -
-      pendingSince >=
-      SWITCH_DELAY
-    ){
-
-      switchEngineState(
-        targetState
+      smoothedAcceleration.toFixed(
+        1
       );
 
-      pendingState = null;
 
-      pendingSince = 0;
+    /*
+      Determine desired engine state.
+    */
+
+    let desiredRevState;
+
+
+    if (
+      isRevving
+    ) {
+
+      desiredRevState =
+        smoothedAcceleration >
+        REV_OFF;
+
+    } else {
+
+      desiredRevState =
+        smoothedAcceleration >
+        REV_ON;
 
     }
+
+
+    /*
+      If we're already in the desired state,
+      cancel pending changes.
+    */
+
+    if (
+      desiredRevState ===
+      isRevving
+    ) {
+
+      pendingState =
+        null;
+
+      pendingStateTime =
+        0;
+
+    } else {
+
+      const now =
+        performance.now();
+
+
+      /*
+        Start a new pending state.
+      */
+
+      if (
+        pendingState !==
+        desiredRevState
+      ) {
+
+        pendingState =
+          desiredRevState;
+
+        pendingStateTime =
+          now;
+
+      }
+
+
+      /*
+        Wait until state is stable.
+      */
+
+      else if (
+        now -
+        pendingStateTime >=
+        STATE_DELAY
+      ) {
+
+        setRevving(
+          desiredRevState
+        );
+
+        pendingState =
+          null;
+
+        pendingStateTime =
+          0;
+
+      }
+
+    }
+
+
+    /*
+      Update ring.
+
+      0 = no acceleration.
+      10 = full ring.
+    */
+
+    const displayMax =
+      10;
+
+
+    const percentage =
+      Math.min(
+        100,
+        Math.max(
+          0,
+          (
+            smoothedAcceleration /
+            displayMax
+          ) *
+          100
+        )
+      );
+
+
+    ring.style.setProperty(
+      "--pct",
+      percentage.toFixed(1)
+    );
+
+
+    /*
+      Pulse grows slightly with acceleration.
+    */
+
+    const pulseScale =
+      1 +
+      Math.min(
+        0.15,
+        smoothedAcceleration /
+        displayMax *
+        0.15
+      );
+
+
+    pulse.style.setProperty(
+      "--pulse-scale",
+      pulseScale.toFixed(3)
+    );
 
   }
 
 
-  /* =========================================================
-     MOTION SENSOR
-  ========================================================= */
+  /* =====================================================
+     MOTION EVENT
+  ===================================================== */
 
-  function onMotion(event){
+  function handleMotion(
+    event
+  ) {
 
-    if(
+    if (
       !running ||
-      !engineStarted
-    ){
+      !startupFinished
+    ) {
 
       return;
 
@@ -952,41 +1178,39 @@ loop
 
 
     /*
-      Preferred method:
-
+      Preferred:
       acceleration without gravity.
     */
 
-    if(
+    if (
       event.acceleration &&
       event.acceleration.x !== null &&
       event.acceleration.x !== undefined
-    ){
+    ) {
 
       ax =
-        event.acceleration.x || 0;
+        event.acceleration.x ||
+        0;
 
       ay =
-        event.acceleration.y || 0;
+        event.acceleration.y ||
+        0;
 
       az =
-        event.acceleration.z || 0;
+        event.acceleration.z ||
+        0;
 
     }
 
 
     /*
       Fallback:
-
-      accelerationIncludingGravity.
-
-      We estimate gravity with a low-pass filter
-      and subtract it from the raw signal.
+      acceleration including gravity.
     */
 
-    else if(
+    else if (
       event.accelerationIncludingGravity
-    ){
+    ) {
 
       const g =
         event.accelerationIncludingGravity;
@@ -1003,13 +1227,12 @@ loop
 
 
       /*
-        Initialize gravity immediately.
-
-        This prevents the first motion event
-        from producing a huge false acceleration.
+        First reading initializes gravity.
       */
 
-      if(!gravityInitialized){
+      if (
+        !gravityReady
+      ) {
 
         gravity.x =
           rawX;
@@ -1020,46 +1243,55 @@ loop
         gravity.z =
           rawZ;
 
-        gravityInitialized =
+        gravityReady =
           true;
 
       }
 
 
       /*
-        Low-pass gravity filter.
-
-        This tracks slow changes in phone orientation
-        while allowing faster movement to remain.
+        Slowly track gravity.
       */
 
-      const gravityAlpha =
+      const gravityFilter =
         0.92;
 
 
       gravity.x =
-        gravityAlpha *
-        gravity.x +
-        (1 - gravityAlpha) *
-        rawX;
+        (
+          gravity.x *
+          gravityFilter
+        ) +
+        (
+          rawX *
+          (1 - gravityFilter)
+        );
 
 
       gravity.y =
-        gravityAlpha *
-        gravity.y +
-        (1 - gravityAlpha) *
-        rawY;
+        (
+          gravity.y *
+          gravityFilter
+        ) +
+        (
+          rawY *
+          (1 - gravityFilter)
+        );
 
 
       gravity.z =
-        gravityAlpha *
-        gravity.z +
-        (1 - gravityAlpha) *
-        rawZ;
+        (
+          gravity.z *
+          gravityFilter
+        ) +
+        (
+          rawZ *
+          (1 - gravityFilter)
+        );
 
 
       /*
-        Remove estimated gravity.
+        Remove gravity.
       */
 
       ax =
@@ -1076,7 +1308,7 @@ loop
 
     }
 
-    else{
+    else {
 
       return;
 
@@ -1084,7 +1316,7 @@ loop
 
 
     /*
-      Calculate total acceleration magnitude.
+      Calculate total acceleration.
     */
 
     const magnitude =
@@ -1095,148 +1327,59 @@ loop
       );
 
 
-    /*
-      Smooth the signal.
-
-      This reduces noise and prevents
-      rapid audio switching.
-    */
-
-    smoothedAccel =
-      smoothedAccel *
-      (1 - SMOOTHING) +
-      magnitude *
-      SMOOTHING;
-
-
-    /*
-      Update engine behavior.
-    */
-
-    updateEngine(
-      smoothedAccel
-    );
-
-
-    /*
-      Update visual ring.
-
-      The ring fills from 0 to 10 m/s².
-    */
-
-    const MAX_DISPLAY_ACCEL =
-      10;
-
-
-    const percentage =
-      Math.max(
-        0,
-        Math.min(
-          100,
-          (
-            smoothedAccel /
-            MAX_DISPLAY_ACCEL
-          ) *
-          100
-        )
-      );
-
-
-    ring.style.setProperty(
-      '--pct',
-      percentage.toFixed(1)
-    );
-
-
-    const pulseAmount =
-      Math.min(
-        0.15,
-        (
-          smoothedAccel /
-          MAX_DISPLAY_ACCEL
-        ) *
-        0.15
-      );
-
-
-    pulse.style.setProperty(
-      '--pulse-scale',
-      (
-        1 +
-        pulseAmount
-      ).toFixed(3)
+    processAcceleration(
+      magnitude
     );
 
   }
 
 
-  /* =========================================================
+  /* =====================================================
      MOTION PERMISSION
-  ========================================================= */
+  ===================================================== */
 
-  async function requestMotionPermission(){
+  async function enableMotion() {
 
     /*
-      iOS Safari requires permission to be requested
-      from a user interaction such as a button click.
+      iPhone / iPad Safari.
     */
 
-    if(
+    if (
       typeof DeviceMotionEvent !==
-      'undefined' &&
+      "undefined" &&
       typeof DeviceMotionEvent.requestPermission ===
-      'function'
-    ){
+      "function"
+    ) {
 
-      try{
+      try {
 
         const result =
           await DeviceMotionEvent
             .requestPermission();
 
 
-        if(
-          result ===
-          'granted'
-        ){
+        if (
+          result !==
+          "granted"
+        ) {
 
-          motionPermissionGranted =
-            true;
+          statusEl.textContent =
+            "Motion permission denied. Enable Motion & Orientation Access in Safari Settings.";
 
-          motionHandler =
-            onMotion;
-
-
-          window.addEventListener(
-            'devicemotion',
-            motionHandler,
-            {
-              passive:true
-            }
-          );
-
-
-          return true;
+          return false;
 
         }
 
-
-        statusEl.textContent =
-          'Motion permission was denied. Enable Motion & Orientation Access in Safari settings.';
-
-
-        return false;
-
-      }catch(error){
+      } catch (
+        error
+      ) {
 
         console.error(
           error
         );
 
-
         statusEl.textContent =
-          'Could not request motion permission.';
-
+          "Could not request motion permission.";
 
         return false;
 
@@ -1246,88 +1389,214 @@ loop
 
 
     /*
-      Android and other browsers
-      generally do not require permission.
+      Check browser support.
     */
 
-    if(
-      'DeviceMotionEvent' in
-      window
-    ){
+    if (
+      typeof DeviceMotionEvent ===
+      "undefined"
+    ) {
 
-      motionPermissionGranted =
-        true;
+      statusEl.textContent =
+        "This browser does not support motion sensors.";
 
-      motionHandler =
-        onMotion;
+      return false;
+
+    }
 
 
-      window.addEventListener(
-        'devicemotion',
-        motionHandler,
-        {
-          passive:true
-        }
+    /*
+      Add sensor listener.
+    */
+
+    motionHandler =
+      handleMotion;
+
+
+    window.addEventListener(
+      "devicemotion",
+      motionHandler,
+      {
+        passive: true
+      }
+    );
+
+
+    motionAvailable =
+      true;
+
+
+    return true;
+
+  }
+
+
+  /* =====================================================
+     START IDLE ENGINE
+  ===================================================== */
+
+  async function startIdleSound() {
+
+    if (
+      !running
+    ) {
+
+      return;
+
+    }
+
+
+    startupFinished =
+      true;
+
+
+    isRevving =
+      false;
+
+
+    idleAudio.currentTime =
+      0;
+
+
+    idleAudio.volume =
+      1;
+
+
+    const success =
+      await playAudio(
+        idleAudio
       );
 
 
-      return true;
+    if (
+      !success
+    ) {
+
+      statusEl.textContent =
+        "Could not play Longest Idle.m4a. Check the filename.";
+
+      return;
 
     }
+
+
+    accelLabel.textContent =
+      "IDLE";
+
+
+    ring.style.setProperty(
+      "--accent",
+      "#4a5157"
+    );
+
+
+    pulse.style.setProperty(
+      "--accent",
+      "#4a5157"
+    );
+
+
+    if (
+      motionAvailable
+    ) {
+
+      statusEl.textContent =
+        "Engine running — motion sensor active";
+
+    } else {
+
+      statusEl.textContent =
+        "Engine running — motion sensor unavailable";
+
+    }
+
+  }
+
+
+  /* =====================================================
+     START ENGINE
+  ===================================================== */
+
+  async function startEngine() {
+
+    running =
+      true;
+
+
+    startupFinished =
+      false;
+
+
+    isRevving =
+      false;
+
+
+    smoothedAcceleration =
+      0;
+
+
+    gravityReady =
+      false;
+
+
+    pendingState =
+      null;
+
+
+    accelNum.textContent =
+      "0.0";
+
+
+    accelLabel.textContent =
+      "STARTING";
+
+
+    ring.style.setProperty(
+      "--accent",
+      "#3fd6b8"
+    );
+
+
+    pulse.style.setProperty(
+      "--accent",
+      "#3fd6b8"
+    );
+
+
+    ring.style.setProperty(
+      "--pct",
+      "0"
+    );
+
+
+    toggleBtn.textContent =
+      "Stop engine";
+
+
+    toggleBtn.classList.add(
+      "stop"
+    );
 
 
     statusEl.textContent =
-      'Motion sensors are not available on this device.';
+      "Starting engine…";
 
-
-    return false;
-
-  }
-
-
-  function stopMotion(){
-
-    if(motionHandler){
-
-      window.removeEventListener(
-        'devicemotion',
-        motionHandler
-      );
-
-      motionHandler =
-        null;
-
-    }
-
-    motionPermissionGranted =
-      false;
-
-  }
-
-
-  /* =========================================================
-     STARTUP SEQUENCE
-  ========================================================= */
-
-  async function startEngine(){
 
     /*
-      Reset state.
+      Request motion permission
+      during the button click.
     */
 
-    running = true;
+    await enableMotion();
 
-    engineStarted = false;
 
-    isRevving = false;
+    if (
+      !running
+    ) {
 
-    pendingState = null;
+      return;
 
-    pendingSince = 0;
-
-    smoothedAccel = 0;
-
-    gravityInitialized = false;
+    }
 
 
     /*
@@ -1362,257 +1631,150 @@ loop
 
 
     /*
-      Update UI.
+      When startup finishes,
+      start idle.
     */
 
-    toggleBtn.textContent =
-      'Stop engine';
+    startupAudio.onended =
+      function () {
 
-    toggleBtn.classList.add(
-      'stop'
-    );
+        startIdleSound();
 
-    statusEl.textContent =
-      'Requesting motion access…';
+      };
 
 
     /*
-      Request motion permission.
-
-      This must happen during the button click.
+      Play startup.
     */
 
-    const motionReady =
-      await requestMotionPermission();
-
-
-    if(!running){
-
-      return;
-
-    }
-
-
-    if(!motionReady){
-
-      /*
-        We still allow the startup sound
-        to play even if motion isn't available.
-      */
-
-      statusEl.textContent =
-        'Starting engine — motion sensor unavailable.';
-
-    }else{
-
-      statusEl.textContent =
-        'Starting engine…';
-
-    }
-
-
-    /*
-      Start startup audio.
-
-      This play() is directly associated
-      with the user's button click.
-    */
-
-    const startupStarted =
-      await safelyPlay(
+    const success =
+      await playAudio(
         startupAudio
       );
 
 
-    if(!startupStarted){
+    if (
+      !success
+    ) {
 
       statusEl.textContent =
-        'Could not play startup sound. Check that startup.m4a exists.';
-
-      return;
+        "Could not play startup.m4a. Check the filename.";
 
     }
-
-
-    /*
-      When startup finishes, start idle.
-    */
-
-    startupAudio.onended =
-      function(){
-
-        if(
-          !running
-        ){
-
-          return;
-
-        }
-
-
-        beginIdleEngine();
-
-      };
 
   }
 
 
-  async function beginIdleEngine(){
+  /* =====================================================
+     STOP ENGINE
+  ===================================================== */
 
-    if(
-      !running ||
-      engineStarted
-    ){
+  function stopEngine() {
 
-      return;
-
-    }
+    running =
+      false;
 
 
-    engineStarted =
-      true;
+    startupFinished =
+      false;
 
 
     isRevving =
       false;
 
 
-    idleAudio.currentTime =
-      0;
+    /*
+      Remove motion listener.
+    */
 
-    idleAudio.volume =
-      1;
+    if (
+      motionHandler
+    ) {
 
-
-    const idleStarted =
-      await safelyPlay(
-        idleAudio
+      window.removeEventListener(
+        "devicemotion",
+        motionHandler
       );
 
-
-    if(!idleStarted){
-
-      statusEl.textContent =
-        'Could not play idle engine sound. Check that Longest Idle.m4a exists.';
-
-      return;
+      motionHandler =
+        null;
 
     }
 
 
-    /*
-      Set idle UI.
-    */
-
-    accelLabel.textContent =
-      'IDLE';
-
-
-    ring.style.setProperty(
-      '--accent',
-      '#4a5157'
-    );
-
-
-    pulse.style.setProperty(
-      '--accent',
-      '#4a5157'
-    );
-
-
-    statusEl.textContent =
-      motionPermissionGranted
-        ? 'Engine running — motion sensor active'
-        : 'Engine running — motion sensor unavailable';
-
-  }
-
-
-  /* =========================================================
-     STOP ENGINE
-  ========================================================= */
-
-  function stopEngine(){
-
-    running =
+    motionAvailable =
       false;
-
-    engineStarted =
-      false;
-
-
-    stopMotion();
 
 
     /*
       Stop all fades.
     */
 
-    for(
-      const timer of fadeTimers.values()
-    ){
-
-      clearInterval(
+    fadeTimers.forEach(
+      function (
         timer
-      );
+      ) {
 
-    }
+        clearInterval(
+          timer
+        );
+
+      }
+    );
 
 
     fadeTimers.clear();
 
 
     /*
-      Stop startup audio.
+      Stop audio.
     */
 
     startupAudio.pause();
 
+    idleAudio.pause();
+
+    revAudio.pause();
+
+
     startupAudio.currentTime =
+      0;
+
+    idleAudio.currentTime =
+      0;
+
+    revAudio.currentTime =
+      0;
+
+
+    startupAudio.volume =
+      1;
+
+    idleAudio.volume =
+      0;
+
+    revAudio.volume =
       0;
 
 
     /*
-      Stop engine tracks.
+      Reset motion values.
     */
 
-    for(
-      const track of
-      [
-        idleAudio,
-        revAudio
-      ]
-    ){
-
-      track.pause();
-
-      track.currentTime =
-        0;
-
-      track.volume =
-        0;
-
-    }
+    smoothedAcceleration =
+      0;
 
 
-    /*
-      Reset state.
-    */
-
-    isRevving =
+    gravityReady =
       false;
+
 
     pendingState =
       null;
 
-    pendingSince =
-      0;
 
-    smoothedAccel =
+    pendingStateTime =
       0;
-
-    gravityInitialized =
-      false;
 
 
     /*
@@ -1620,33 +1782,34 @@ loop
     */
 
     accelNum.textContent =
-      '0.0';
+      "0.0";
+
 
     accelLabel.textContent =
-      'IDLE';
+      "IDLE";
 
 
     ring.style.setProperty(
-      '--accent',
-      '#4a5157'
+      "--accent",
+      "#4a5157"
     );
 
 
     pulse.style.setProperty(
-      '--accent',
-      '#4a5157'
+      "--accent",
+      "#4a5157"
     );
 
 
     ring.style.setProperty(
-      '--pct',
-      '0'
+      "--pct",
+      "0"
     );
 
 
     pulse.style.setProperty(
-      '--pulse-scale',
-      '1'
+      "--pulse-scale",
+      "1"
     );
 
 
@@ -1655,47 +1818,45 @@ loop
     */
 
     toggleBtn.textContent =
-      'Start engine';
+      "Start engine";
+
 
     toggleBtn.classList.remove(
-      'stop'
+      "stop"
     );
 
 
     statusEl.textContent =
-      'Stopped.';
+      "Stopped.";
 
   }
 
 
-  /* =========================================================
-     MAIN BUTTON
-  ========================================================= */
+  /* =====================================================
+     BUTTON
+  ===================================================== */
 
   toggleBtn.addEventListener(
-    'click',
-    async function(){
+    "click",
+    async function () {
 
-      if(running){
+      if (
+        running
+      ) {
 
         stopEngine();
 
-      }else{
-
-        /*
-          Prevent accidental double taps
-          during startup.
-        */
+      } else {
 
         toggleBtn.disabled =
           true;
 
 
-        try{
+        try {
 
           await startEngine();
 
-        }finally{
+        } finally {
 
           toggleBtn.disabled =
             false;
@@ -1708,35 +1869,48 @@ loop
   );
 
 
-  /* =========================================================
-     INITIAL UI
-  ========================================================= */
+  /* =====================================================
+     AUDIO ERROR REPORTING
+  ===================================================== */
 
-  ring.style.setProperty(
-    '--accent',
-    '#4a5157'
+  startupAudio.addEventListener(
+    "error",
+    function () {
+
+      console.error(
+        "Could not load startup.m4a"
+      );
+
+    }
   );
 
 
-  pulse.style.setProperty(
-    '--accent',
-    '#4a5157'
+  idleAudio.addEventListener(
+    "error",
+    function () {
+
+      console.error(
+        "Could not load Longest Idle.m4a"
+      );
+
+    }
   );
 
 
-  ring.style.setProperty(
-    '--pct',
-    '0'
-  );
+  revAudio.addEventListener(
+    "error",
+    function () {
 
+      console.error(
+        "Could not load rev.m4a"
+      );
 
-  pulse.style.setProperty(
-    '--pulse-scale',
-    '1'
+    }
   );
 
 
 })();
+
 </script>
 
 </body>
