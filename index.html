@@ -1,33 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
-
-<meta
-  name="apple-mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="apple-mobile-web-app-status-bar-style"
-  content="black-translucent"
->
-
-<meta
-  name="mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="theme-color"
-  content="#090b0d"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#090b0d">
 
 <title>Velocitone Motion Engine</title>
 
@@ -57,11 +36,8 @@ body {
 }
 
 body {
-
   margin: 0;
-
   background: var(--bg);
-
   color: var(--ink);
 
   font-family:
@@ -71,9 +47,7 @@ body {
     sans-serif;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
   min-height: 100vh;
@@ -87,88 +61,58 @@ body {
 }
 
 .mono {
-
   font-family:
     "SFMono-Regular",
     ui-monospace,
     "Courier New",
     monospace;
-
 }
 
 
-/* =========================================================
-   HEADER
-========================================================= */
+/* HEADER */
 
 header {
-
   width: 100%;
-
   max-width: 480px;
-
-  padding:
-    22px
-    4px
-    8px;
-
+  padding: 22px 4px 8px;
 }
 
 .brand {
-
   font-size: 13px;
-
   letter-spacing: .14em;
-
   text-transform: uppercase;
-
   color: var(--ink-dim);
-
 }
 
 .brand b {
-
   color: var(--ink);
-
   font-weight: 600;
-
 }
 
 
-/* =========================================================
-   DIAL
-========================================================= */
+/* DIAL */
 
 .dial-wrap {
-
   width: 100%;
-
   max-width: 480px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
   margin-top: 18px;
-
 }
 
 .ring {
-
   position: relative;
 
   width: min(72vw, 320px);
-
   height: min(72vw, 320px);
 
   border-radius: 50%;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   background:
@@ -179,15 +123,12 @@ header {
     );
 
   border: 1px solid var(--line);
-
 }
 
 .ring::before {
-
   content: "";
 
   position: absolute;
-
   inset: -1px;
 
   border-radius: 50%;
@@ -206,13 +147,10 @@ header {
     linear-gradient(#000 0 0);
 
   -webkit-mask-composite: xor;
-
   mask-composite: exclude;
-
 }
 
 .pulse {
-
   position: absolute;
 
   inset: 14px;
@@ -230,25 +168,19 @@ header {
   transition:
     transform .12s ease-out,
     border-color .25s ease;
-
 }
 
 .speed-num {
-
   font-size: 64px;
-
   font-weight: 700;
-
   line-height: 1;
 
   color: var(--ink);
 
   letter-spacing: -.02em;
-
 }
 
 .speed-unit {
-
   font-size: 15px;
 
   color: var(--ink-dim);
@@ -256,11 +188,9 @@ header {
   margin-top: 6px;
 
   letter-spacing: .06em;
-
 }
 
 .speed-label {
-
   font-size: 13px;
 
   color: var(--accent, var(--idle));
@@ -272,32 +202,24 @@ header {
   letter-spacing: .12em;
 
   font-weight: 600;
-
 }
 
 
-/* =========================================================
-   CONTROLS
-========================================================= */
+/* CONTROLS */
 
 .controls {
-
   width: 100%;
-
   max-width: 480px;
 
   margin-top: 30px;
 
   display: flex;
-
   flex-direction: column;
 
   gap: 14px;
-
 }
 
 .main-btn {
-
   width: 100%;
 
   padding: 18px;
@@ -322,33 +244,23 @@ header {
     background .2s ease,
     transform .08s ease,
     opacity .2s ease;
-
 }
 
 .main-btn:active {
-
   transform: scale(.98);
-
 }
 
 .main-btn.stop {
-
   background: var(--fast);
-
   color: #2a0606;
-
 }
 
 .main-btn:disabled {
-
   opacity: .65;
-
   cursor: wait;
-
 }
 
 .status {
-
   font-size: 12.5px;
 
   color: var(--ink-dim);
@@ -358,18 +270,13 @@ header {
   min-height: 18px;
 
   line-height: 1.5;
-
 }
 
 
-/* =========================================================
-   BANDS
-========================================================= */
+/* BANDS */
 
 .bands {
-
   width: 100%;
-
   max-width: 480px;
 
   margin-top: 24px;
@@ -380,11 +287,9 @@ header {
   border-radius: 14px;
 
   overflow: hidden;
-
 }
 
 .band {
-
   display: flex;
 
   align-items: center;
@@ -399,19 +304,14 @@ header {
     1px solid var(--line);
 
   background: var(--panel);
-
 }
 
 .band:last-child {
-
   border-bottom: none;
-
 }
 
 .band .dot {
-
   width: 8px;
-
   height: 8px;
 
   border-radius: 50%;
@@ -419,38 +319,28 @@ header {
   margin-right: 10px;
 
   display: inline-block;
-
 }
 
 .band .name {
-
   display: flex;
-
   align-items: center;
 
   color: var(--ink);
-
 }
 
 .band .range {
-
   color: var(--ink-dim);
 
   font-family:
     ui-monospace,
     monospace;
-
 }
 
 
-/* =========================================================
-   DETAILS
-========================================================= */
+/* DETAILS */
 
 details {
-
   width: 100%;
-
   max-width: 480px;
 
   margin-top: 20px;
@@ -458,11 +348,9 @@ details {
   color: var(--ink-dim);
 
   font-size: 13px;
-
 }
 
 summary {
-
   cursor: pointer;
 
   padding: 10px 2px;
@@ -470,27 +358,21 @@ summary {
   color: var(--ink);
 
   font-weight: 600;
-
 }
 
 details p {
-
   line-height: 1.55;
 
   margin:
     6px
     2px
     14px;
-
 }
 
 
-/* =========================================================
-   FOOTER
-========================================================= */
+/* FOOTER */
 
 footer {
-
   margin-top: auto;
 
   padding-top: 24px;
@@ -500,24 +382,19 @@ footer {
   color: #4a5157;
 
   text-align: center;
-
 }
 
 </style>
-
 </head>
 
 
 <body>
 
-
 <header>
 
   <div class="brand">
-
     <b>Velocitone</b>
     — motion engine sound
-
   </div>
 
 </header>
@@ -639,16 +516,12 @@ footer {
 
   <p>
     Tap Start engine to play the startup sound.
-    The idle engine sound starts underneath the final
-    part of the startup sound and fades in so there
-    is no silent gap between them.
-  </p>
-
-  <p>
-    When the motion sensor detects sustained acceleration,
-    the system smoothly crossfades from the idle sound
+    The idle engine sound starts playing at full volume
+    shortly before the startup sound ends, preventing
+    a silence gap. When the motion sensor detects
+    sustained acceleration, the system smoothly fades
     into the rev sound. When acceleration decreases,
-    it smoothly crossfades back to idle.
+    the rev sound smoothly fades back into the idle sound.
   </p>
 
   <p>
@@ -666,17 +539,15 @@ footer {
 
 
 <footer>
-
   Motion sensor only. No GPS is used.
-
 </footer>
 
 
 <!-- =======================================================
      AUDIO FILES
 
-     ALL THREE FILES MUST BE IN THE SAME FOLDER
-     AS THIS HTML FILE.
+     These three files MUST be in the SAME folder
+     as this HTML file:
 
      startup.mp3
      Longest Idle.m4a
@@ -774,11 +645,9 @@ let pendingState = null;
 
 let pendingStateTime = 0;
 
-let fadeTimers = new Map();
+let idleStartTimer = null;
 
-let idleStarted = false;
-
-let startupFadeTimer = null;
+const fadeTimers = new Map();
 
 
 /* =========================================================
@@ -787,62 +656,57 @@ let startupFadeTimer = null;
 
 
 /*
-   Acceleration required to start revving.
+   HOW EARLY THE IDLE SOUND STARTS.
+
+   0.35 means the idle sound begins
+   0.35 seconds BEFORE startup.mp3 ends.
+
+   The idle sound starts at FULL VOLUME.
+
+   There is NO fade-in.
+*/
+
+const IDLE_OVERLAP = 0.35;
+
+
+/*
+   Acceleration needed to start revving.
 */
 
 const REV_ON = 2.5;
 
 
 /*
-   Acceleration required to return to idle.
+   Acceleration needed to stop revving.
+
+   Lower than REV_ON creates hysteresis,
+   preventing rapid switching.
 */
 
 const REV_OFF = 1.5;
 
 
 /*
-   How long acceleration must remain
-   stable before changing sound.
+   Acceleration must remain stable
+   this long before switching sounds.
 */
 
 const STATE_DELAY = 200;
 
 
 /*
-   Crossfade time between idle and rev.
+   Rev sound fade time.
+
+   This controls both:
+
+   IDLE -> REV
+
+   and
+
+   REV -> IDLE
 */
 
-const FADE_TIME = 500;
-
-
-/*
-   How many seconds before startup ends
-   that idle should begin.
-
-   IMPORTANT:
-
-   This is the key setting that removes
-   the silence between startup and idle.
-
-   Increase this if you still hear a gap.
-
-   Example:
-
-   1.5 = idle begins 1.5 seconds before startup ends.
-*/
-
-const IDLE_OVERLAP_SECONDS = 1.5;
-
-
-/*
-   How long idle takes to fade in
-   during the startup overlap.
-
-   This should usually match or be
-   slightly shorter than IDLE_OVERLAP_SECONDS.
-*/
-
-const STARTUP_IDLE_FADE_TIME = 1200;
+const FADE_TIME = 400;
 
 
 /*
@@ -857,7 +721,7 @@ const SMOOTHING = 0.20;
 
 
 /* =========================================================
-   AUDIO FADE
+   CANCEL AUDIO FADE
 ========================================================= */
 
 function cancelFade(track) {
@@ -874,6 +738,10 @@ function cancelFade(track) {
 
 }
 
+
+/* =========================================================
+   FADE AUDIO
+========================================================= */
 
 function fadeAudio(
   track,
@@ -893,16 +761,6 @@ function fadeAudio(
     setInterval(
       function () {
 
-        if (!running) {
-
-          clearInterval(timer);
-
-          fadeTimers.delete(track);
-
-          return;
-
-        }
-
         const progress =
           Math.min(
             1,
@@ -913,17 +771,16 @@ function fadeAudio(
           );
 
         track.volume =
-
           startVolume +
-
           (
             targetVolume -
             startVolume
           ) *
-
           progress;
 
-        if (progress >= 1) {
+        if (
+          progress >= 1
+        ) {
 
           clearInterval(timer);
 
@@ -931,6 +788,11 @@ function fadeAudio(
 
           track.volume =
             targetVolume;
+
+          /*
+             Only pause a track when
+             it has completely faded out.
+          */
 
           if (
             targetVolume === 0
@@ -981,198 +843,7 @@ async function playAudio(track) {
 
 
 /* =========================================================
-   START IDLE UNDER STARTUP
-========================================================= */
-
-async function startIdleUnderStartup() {
-
-  if (
-    !running ||
-    idleStarted
-  ) {
-
-    return;
-
-  }
-
-  idleStarted = true;
-
-  console.log(
-    "Starting idle audio underneath startup."
-  );
-
-
-  /*
-     Start idle at ZERO volume.
-
-     The audio is already playing while
-     startup.mp3 is still playing.
-  */
-
-  idleAudio.currentTime = 0;
-
-  idleAudio.volume = 0;
-
-
-  const success =
-    await playAudio(
-      idleAudio
-    );
-
-
-  if (!success) {
-
-    statusEl.textContent =
-      "Could not play Longest Idle.m4a.";
-
-    console.error(
-      "Could not start Longest Idle.m4a"
-    );
-
-    return;
-
-  }
-
-
-  /*
-     Fade idle in while startup is
-     finishing.
-
-     This is what eliminates the gap.
-  */
-
-  fadeAudio(
-    idleAudio,
-    1,
-    STARTUP_IDLE_FADE_TIME
-  );
-
-
-  /*
-     The idle sound is now running.
-
-     The startup sound continues playing
-     on top of it until it finishes.
-  */
-
-}
-
-
-/* =========================================================
-   STARTUP TIME UPDATE
-========================================================= */
-
-startupAudio.addEventListener(
-  "timeupdate",
-  function () {
-
-    if (
-      !running ||
-      idleStarted
-    ) {
-
-      return;
-
-    }
-
-
-    const duration =
-      startupAudio.duration;
-
-
-    const currentTime =
-      startupAudio.currentTime;
-
-
-    if (
-      !isFinite(duration) ||
-      duration <= 0
-    ) {
-
-      return;
-
-    }
-
-
-    const timeRemaining =
-      duration -
-      currentTime;
-
-
-    /*
-       Start idle before startup ends.
-
-       Example:
-
-       Startup = 10 seconds
-
-       IDLE_OVERLAP_SECONDS = 1.5
-
-       Idle starts around 8.5 seconds.
-    */
-
-    if (
-      timeRemaining <=
-      IDLE_OVERLAP_SECONDS
-    ) {
-
-      startIdleUnderStartup();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   STARTUP ENDED
-========================================================= */
-
-startupAudio.addEventListener(
-  "ended",
-  function () {
-
-    if (!running) {
-
-      return;
-
-    }
-
-
-    startupFinished = true;
-
-
-    /*
-       This is only a safety fallback.
-
-       Normally idle will already be playing
-       before startup reaches this point.
-    */
-
-    if (!idleStarted) {
-
-      startIdleUnderStartup();
-
-    }
-
-
-    accelLabel.textContent =
-      "IDLE";
-
-
-    statusEl.textContent =
-      motionAvailable
-
-        ? "Engine running — motion sensor active"
-
-        : "Engine running — motion sensor unavailable";
-
-  }
-);
-
-
-/* =========================================================
-   SWITCH IDLE / REV
+   SMOOTHLY SWITCH REV SOUND
 ========================================================= */
 
 async function setRevving(revving) {
@@ -1188,8 +859,7 @@ async function setRevving(revving) {
 
 
   if (
-    revving ===
-    isRevving
+    revving === isRevving
   ) {
 
     return;
@@ -1214,79 +884,59 @@ async function setRevving(revving) {
 
 
   /*
-     Start the new sound.
+    START REV SOUND
 
-     IMPORTANT:
+    The rev sound begins at 0 volume
+    and smoothly fades up.
 
-     We DO NOT reset currentTime if
-     the track is already playing.
-
-     This prevents the idle sound from
-     restarting when returning from rev.
+    IDLE remains playing underneath.
   */
 
   if (
-    nextTrack.paused
+    revving
   ) {
 
-    nextTrack.currentTime = 0;
+    cancelFade(revAudio);
 
-    nextTrack.volume = 0;
+    revAudio.currentTime = 0;
 
+    revAudio.volume = 0;
 
     const success =
-      await playAudio(
-        nextTrack
-      );
-
+      await playAudio(revAudio);
 
     if (!success) {
 
+      isRevving = false;
+
       statusEl.textContent =
-
-        revving
-
-          ? "Could not play rev.m4a."
-
-          : "Could not play Longest Idle.m4a.";
+        "Could not play rev.m4a.";
 
       return;
 
     }
 
-  }
+    /*
+      Smoothly bring REV up.
+    */
+
+    fadeAudio(
+      revAudio,
+      1,
+      FADE_TIME
+    );
 
 
-  /*
-     Smooth crossfade.
+    /*
+      Smoothly reduce IDLE.
+    */
 
-     Rev enters gradually.
+    fadeAudio(
+      idleAudio,
+      0,
+      FADE_TIME
+    );
 
-     Idle fades away gradually.
-
-     When returning to idle,
-     rev fades away gradually.
-  */
-
-  fadeAudio(
-    nextTrack,
-    1,
-    FADE_TIME
-  );
-
-
-  fadeAudio(
-    oldTrack,
-    0,
-    FADE_TIME
-  );
-
-
-  /*
-     Update interface.
-  */
-
-  if (revving) {
 
     accelLabel.textContent =
       "ACCELERATING";
@@ -1297,7 +947,6 @@ async function setRevving(revving) {
       "#f2b544"
     );
 
-
     pulse.style.setProperty(
       "--accent",
       "#f2b544"
@@ -1305,7 +954,67 @@ async function setRevving(revving) {
 
   }
 
+
+  /*
+    RETURN TO IDLE
+  */
+
   else {
+
+    /*
+      IMPORTANT:
+
+      Idle is already playing underneath
+      the rev sound in normal operation.
+
+      We do NOT restart idle.
+
+      We simply fade the rev sound out
+      while bringing idle back up.
+    */
+
+    if (
+      idleAudio.paused
+    ) {
+
+      idleAudio.volume = 0;
+
+      const success =
+        await playAudio(idleAudio);
+
+      if (!success) {
+
+        statusEl.textContent =
+          "Could not play Longest Idle.m4a.";
+
+        return;
+
+      }
+
+    }
+
+
+    /*
+      Smoothly bring IDLE back.
+    */
+
+    fadeAudio(
+      idleAudio,
+      1,
+      FADE_TIME
+    );
+
+
+    /*
+      Smoothly fade REV away.
+    */
+
+    fadeAudio(
+      revAudio,
+      0,
+      FADE_TIME
+    );
+
 
     accelLabel.textContent =
       "IDLE";
@@ -1315,7 +1024,6 @@ async function setRevving(revving) {
       "--accent",
       "#4a5157"
     );
-
 
     pulse.style.setProperty(
       "--accent",
@@ -1335,11 +1043,6 @@ function processAcceleration(
   acceleration
 ) {
 
-
-  /*
-     Smooth acceleration.
-  */
-
   smoothedAcceleration =
 
     (
@@ -1355,26 +1058,18 @@ function processAcceleration(
     );
 
 
-  /*
-     Display acceleration.
-  */
-
   accelNum.textContent =
-
     smoothedAcceleration.toFixed(1);
 
-
-  /*
-     Determine whether rev should be active.
-  */
 
   let desiredRevState;
 
 
-  if (isRevving) {
+  if (
+    isRevving
+  ) {
 
     desiredRevState =
-
       smoothedAcceleration >
       REV_OFF;
 
@@ -1383,26 +1078,22 @@ function processAcceleration(
   else {
 
     desiredRevState =
-
       smoothedAcceleration >
       REV_ON;
 
   }
 
 
-  /*
-     If current state is already correct,
-     cancel any pending switch.
-  */
-
   if (
     desiredRevState ===
     isRevving
   ) {
 
-    pendingState = null;
+    pendingState =
+      null;
 
-    pendingStateTime = 0;
+    pendingStateTime =
+      0;
 
   }
 
@@ -1411,10 +1102,6 @@ function processAcceleration(
     const now =
       performance.now();
 
-
-    /*
-       Start stability timer.
-    */
 
     if (
       pendingState !==
@@ -1429,12 +1116,6 @@ function processAcceleration(
 
     }
 
-
-    /*
-       Switch after acceleration
-       remains stable.
-    */
-
     else if (
 
       now -
@@ -1447,10 +1128,11 @@ function processAcceleration(
         desiredRevState
       );
 
+      pendingState =
+        null;
 
-      pendingState = null;
-
-      pendingStateTime = 0;
+      pendingStateTime =
+        0;
 
     }
 
@@ -1458,12 +1140,13 @@ function processAcceleration(
 
 
   /*
-     Ring display.
+    Ring display.
 
-     10 m/s² = full ring.
+    10 m/s² = full ring.
   */
 
-  const displayMax = 10;
+  const displayMax =
+    10;
 
 
   const percentage =
@@ -1479,7 +1162,8 @@ function processAcceleration(
         (
           smoothedAcceleration /
           displayMax
-        ) * 100
+        ) *
+        100
 
       )
 
@@ -1492,10 +1176,6 @@ function processAcceleration(
   );
 
 
-  /*
-     Pulse animation.
-  */
-
   const pulseScale =
 
     1 +
@@ -1507,7 +1187,8 @@ function processAcceleration(
       (
         smoothedAcceleration /
         displayMax
-      ) * 0.15
+      ) *
+      0.15
 
     );
 
@@ -1537,14 +1218,12 @@ function handleMotion(event) {
 
 
   let ax = 0;
-
   let ay = 0;
-
   let az = 0;
 
 
   /*
-     Preferred acceleration data.
+    Preferred acceleration data.
   */
 
   if (
@@ -1558,19 +1237,22 @@ function handleMotion(event) {
   ) {
 
     ax =
-      event.acceleration.x || 0;
+      event.acceleration.x ||
+      0;
 
     ay =
-      event.acceleration.y || 0;
+      event.acceleration.y ||
+      0;
 
     az =
-      event.acceleration.z || 0;
+      event.acceleration.z ||
+      0;
 
   }
 
 
   /*
-     Fallback for accelerationIncludingGravity.
+    Fallback using accelerationIncludingGravity.
   */
 
   else if (
@@ -1591,10 +1273,6 @@ function handleMotion(event) {
       g.z || 0;
 
 
-    /*
-       Initialize gravity.
-    */
-
     if (
       !gravityReady
     ) {
@@ -1614,62 +1292,36 @@ function handleMotion(event) {
     }
 
 
-    /*
-       Slowly track gravity.
-    */
-
     const gravityFilter =
       0.92;
 
 
     gravity.x =
 
-      (
-        gravity.x *
-        gravityFilter
-      )
+      gravity.x *
+      gravityFilter +
 
-      +
-
-      (
-        rawX *
-        (1 - gravityFilter)
-      );
+      rawX *
+      (1 - gravityFilter);
 
 
     gravity.y =
 
-      (
-        gravity.y *
-        gravityFilter
-      )
+      gravity.y *
+      gravityFilter +
 
-      +
-
-      (
-        rawY *
-        (1 - gravityFilter)
-      );
+      rawY *
+      (1 - gravityFilter);
 
 
     gravity.z =
 
-      (
-        gravity.z *
-        gravityFilter
-      )
+      gravity.z *
+      gravityFilter +
 
-      +
+      rawZ *
+      (1 - gravityFilter);
 
-      (
-        rawZ *
-        (1 - gravityFilter)
-      );
-
-
-    /*
-       Remove gravity.
-    */
 
     ax =
       rawX -
@@ -1685,16 +1337,13 @@ function handleMotion(event) {
 
   }
 
+
   else {
 
     return;
 
   }
 
-
-  /*
-     Calculate acceleration magnitude.
-  */
 
   const magnitude =
 
@@ -1721,10 +1370,6 @@ function handleMotion(event) {
 ========================================================= */
 
 async function enableMotion() {
-
-  /*
-     iPhone/iPad Safari.
-  */
 
   if (
 
@@ -1774,13 +1419,11 @@ async function enableMotion() {
   }
 
 
-  /*
-     Check support.
-  */
-
   if (
+
     typeof DeviceMotionEvent ===
     "undefined"
+
   ) {
 
     statusEl.textContent =
@@ -1790,10 +1433,6 @@ async function enableMotion() {
 
   }
 
-
-  /*
-     Add listener.
-  */
 
   motionHandler =
     handleMotion;
@@ -1822,26 +1461,148 @@ async function enableMotion() {
 
 
 /* =========================================================
+   START IDLE SOUND BEFORE STARTUP ENDS
+========================================================= */
+
+async function startIdleSound() {
+
+  if (
+    !running ||
+    startupFinished
+  ) {
+
+    return;
+
+  }
+
+
+  /*
+    Mark startup as finished BEFORE playing idle.
+
+    This prevents motion events from
+    being ignored once idle begins.
+  */
+
+  startupFinished =
+    true;
+
+
+  isRevving =
+    false;
+
+
+  /*
+    Cancel any old fade.
+  */
+
+  cancelFade(idleAudio);
+
+
+  /*
+    Start idle from the beginning.
+
+    IMPORTANT:
+
+    We set the volume to 1 BEFORE calling play().
+
+    This means there is NO fade-in.
+
+    The idle sound starts normally
+    at full volume.
+  */
+
+  idleAudio.currentTime =
+    0;
+
+  idleAudio.volume =
+    1;
+
+
+  const success =
+    await playAudio(
+      idleAudio
+    );
+
+
+  if (!success) {
+
+    startupFinished =
+      false;
+
+    statusEl.textContent =
+      "Could not play Longest Idle.m4a. Check the filename.";
+
+    return;
+
+  }
+
+
+  accelLabel.textContent =
+    "IDLE";
+
+
+  ring.style.setProperty(
+    "--accent",
+    "#4a5157"
+  );
+
+  pulse.style.setProperty(
+    "--accent",
+    "#4a5157"
+  );
+
+
+  if (
+    motionAvailable
+  ) {
+
+    statusEl.textContent =
+      "Engine running — motion sensor active";
+
+  }
+
+  else {
+
+    statusEl.textContent =
+      "Engine running — motion sensor unavailable";
+
+  }
+
+}
+
+
+/* =========================================================
    START ENGINE
 ========================================================= */
 
 async function startEngine() {
 
-  running = true;
+  running =
+    true;
 
-  startupFinished = false;
 
-  isRevving = false;
+  startupFinished =
+    false;
 
-  idleStarted = false;
 
-  smoothedAcceleration = 0;
+  isRevving =
+    false;
 
-  gravityReady = false;
 
-  pendingState = null;
+  smoothedAcceleration =
+    0;
 
-  pendingStateTime = 0;
+
+  gravityReady =
+    false;
+
+
+  pendingState =
+    null;
+
+
+  pendingStateTime =
+    0;
 
 
   accelNum.textContent =
@@ -1870,6 +1631,12 @@ async function startEngine() {
   );
 
 
+  pulse.style.setProperty(
+    "--pulse-scale",
+    "1"
+  );
+
+
   toggleBtn.textContent =
     "Stop engine";
 
@@ -1884,13 +1651,16 @@ async function startEngine() {
 
 
   /*
-     Enable motion sensor.
+    Request motion permission
+    during the button tap.
   */
 
   await enableMotion();
 
 
-  if (!running) {
+  if (
+    !running
+  ) {
 
     return;
 
@@ -1898,7 +1668,7 @@ async function startEngine() {
 
 
   /*
-     Stop/reset all audio.
+    Stop/reset all audio.
   */
 
   startupAudio.pause();
@@ -1908,30 +1678,172 @@ async function startEngine() {
   revAudio.pause();
 
 
-  startupAudio.currentTime = 0;
+  startupAudio.currentTime =
+    0;
 
-  idleAudio.currentTime = 0;
+  idleAudio.currentTime =
+    0;
 
-  revAudio.currentTime = 0;
+  revAudio.currentTime =
+    0;
 
 
-  startupAudio.volume = 1;
+  startupAudio.volume =
+    1;
 
-  idleAudio.volume = 0;
+  idleAudio.volume =
+    0;
 
-  revAudio.volume = 0;
+  revAudio.volume =
+    0;
 
 
   /*
-     Start startup sound.
+    Calculate when to start idle.
 
-     IMPORTANT:
+    Example:
 
-     Idle is NOT waiting for startup
-     to finish.
+    startup duration = 5 seconds
 
-     The timeupdate event above will
-     start idle before startup ends.
+    IDLE_OVERLAP = 0.35
+
+    Idle starts at 4.65 seconds.
+  */
+
+  function scheduleIdleOverlap() {
+
+    if (
+      !running ||
+      startupFinished
+    ) {
+
+      return;
+
+    }
+
+
+    const duration =
+      startupAudio.duration;
+
+
+    if (
+      !duration ||
+      !isFinite(duration)
+    ) {
+
+      return;
+
+    }
+
+
+    const remaining =
+      duration -
+      startupAudio.currentTime;
+
+
+    if (
+      remaining <=
+      IDLE_OVERLAP
+    ) {
+
+      startIdleSound();
+
+      return;
+
+    }
+
+
+    /*
+      Keep checking frequently.
+
+      This avoids relying only on
+      the "timeupdate" event,
+      which can be delayed.
+    */
+
+    idleStartTimer =
+      setTimeout(
+
+        scheduleIdleOverlap,
+
+        Math.min(
+          50,
+          Math.max(
+            10,
+            (
+              remaining -
+              IDLE_OVERLAP
+            ) *
+            1000
+          )
+        )
+
+      );
+
+  }
+
+
+  /*
+    Start checking for the overlap point.
+  */
+
+  startupAudio.addEventListener(
+    "loadedmetadata",
+    scheduleIdleOverlap,
+    {
+      once: true
+    }
+  );
+
+
+  /*
+    Also check immediately
+    if duration is already available.
+  */
+
+  scheduleIdleOverlap();
+
+
+  /*
+    Absolute fallback:
+
+    If the overlap timer somehow misses,
+    start idle immediately when startup ends.
+
+    Normally this will NOT run because
+    idle has already started.
+  */
+
+  startupAudio.onended =
+    function () {
+
+      if (
+        idleStartTimer
+      ) {
+
+        clearTimeout(
+          idleStartTimer
+        );
+
+        idleStartTimer =
+          null;
+
+      }
+
+
+      if (
+        !startupFinished
+      ) {
+
+        startIdleSound();
+
+      }
+
+    };
+
+
+  /*
+    Play startup.mp3.
   */
 
   const success =
@@ -1945,8 +1857,6 @@ async function startEngine() {
     statusEl.textContent =
       "Could not play startup.mp3. Check that startup.mp3 is in the same folder as this HTML file.";
 
-    return;
-
   }
 
 }
@@ -1958,20 +1868,43 @@ async function startEngine() {
 
 function stopEngine() {
 
-  running = false;
+  running =
+    false;
 
-  startupFinished = false;
 
-  isRevving = false;
+  startupFinished =
+    false;
 
-  idleStarted = false;
+
+  isRevving =
+    false;
 
 
   /*
-     Remove motion listener.
+    Cancel idle overlap timer.
   */
 
-  if (motionHandler) {
+  if (
+    idleStartTimer
+  ) {
+
+    clearTimeout(
+      idleStartTimer
+    );
+
+    idleStartTimer =
+      null;
+
+  }
+
+
+  /*
+    Remove motion listener.
+  */
+
+  if (
+    motionHandler
+  ) {
 
     window.removeEventListener(
 
@@ -1981,24 +1914,28 @@ function stopEngine() {
 
     );
 
-    motionHandler = null;
+    motionHandler =
+      null;
 
   }
 
 
-  motionAvailable = false;
+  motionAvailable =
+    false;
 
 
   /*
-     Stop all fade timers.
+    Stop all audio fades.
   */
 
   fadeTimers.forEach(
+
     function(timer) {
 
       clearInterval(timer);
 
     }
+
   );
 
 
@@ -2006,7 +1943,7 @@ function stopEngine() {
 
 
   /*
-     Stop audio.
+    Stop audio.
   */
 
   startupAudio.pause();
@@ -2017,42 +1954,55 @@ function stopEngine() {
 
 
   /*
-     Reset positions.
+    Reset audio position.
   */
 
-  startupAudio.currentTime = 0;
+  startupAudio.currentTime =
+    0;
 
-  idleAudio.currentTime = 0;
+  idleAudio.currentTime =
+    0;
 
-  revAudio.currentTime = 0;
+  revAudio.currentTime =
+    0;
 
 
   /*
-     Reset volumes.
+    Reset volumes.
   */
 
-  startupAudio.volume = 1;
+  startupAudio.volume =
+    1;
 
-  idleAudio.volume = 0;
+  idleAudio.volume =
+    0;
 
-  revAudio.volume = 0;
+  revAudio.volume =
+    0;
 
 
   /*
-     Reset motion.
+    Reset motion.
   */
 
-  smoothedAcceleration = 0;
+  smoothedAcceleration =
+    0;
 
-  gravityReady = false;
 
-  pendingState = null;
+  gravityReady =
+    false;
 
-  pendingStateTime = 0;
+
+  pendingState =
+    null;
+
+
+  pendingStateTime =
+    0;
 
 
   /*
-     Reset display.
+    Reset display.
   */
 
   accelNum.textContent =
@@ -2088,7 +2038,7 @@ function stopEngine() {
 
 
   /*
-     Reset button.
+    Reset button.
   */
 
   toggleBtn.textContent =
@@ -2116,7 +2066,9 @@ toggleBtn.addEventListener(
 
   async function() {
 
-    if (running) {
+    if (
+      running
+    ) {
 
       stopEngine();
 
@@ -2125,7 +2077,8 @@ toggleBtn.addEventListener(
     }
 
 
-    toggleBtn.disabled = true;
+    toggleBtn.disabled =
+      true;
 
 
     try {
@@ -2136,7 +2089,8 @@ toggleBtn.addEventListener(
 
     finally {
 
-      toggleBtn.disabled = false;
+      toggleBtn.disabled =
+        false;
 
     }
 
@@ -2156,12 +2110,12 @@ startupAudio.addEventListener(
   function() {
 
     console.error(
-      "Could not load startup.mp3.",
+      "Could not load startup.mp3",
       startupAudio.error
     );
 
     statusEl.textContent =
-      "ERROR: startup.mp3 could not be loaded. Check the filename and folder.";
+      "ERROR: startup.mp3 could not be loaded.";
 
   }
 
@@ -2175,12 +2129,12 @@ idleAudio.addEventListener(
   function() {
 
     console.error(
-      "Could not load Longest Idle.m4a.",
+      "Could not load Longest Idle.m4a",
       idleAudio.error
     );
 
     statusEl.textContent =
-      "ERROR: Longest Idle.m4a could not be loaded. Check the filename and folder.";
+      "ERROR: Longest Idle.m4a could not be loaded.";
 
   }
 
@@ -2194,12 +2148,12 @@ revAudio.addEventListener(
   function() {
 
     console.error(
-      "Could not load rev.m4a.",
+      "Could not load rev.m4a",
       revAudio.error
     );
 
     statusEl.textContent =
-      "ERROR: rev.m4a could not be loaded. Check the filename and folder.";
+      "ERROR: rev.m4a could not be loaded.";
 
   }
 
@@ -2215,30 +2169,24 @@ ring.style.setProperty(
   "#4a5157"
 );
 
-
 pulse.style.setProperty(
   "--accent",
   "#4a5157"
 );
-
 
 ring.style.setProperty(
   "--pct",
   "0"
 );
 
-
 pulse.style.setProperty(
   "--pulse-scale",
   "1"
 );
 
-
 })();
 
 </script>
 
-
 </body>
-
 </html>
