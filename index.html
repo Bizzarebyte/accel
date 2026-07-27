@@ -139,15 +139,13 @@
   </div>
 
   <div class="bands">
-    <div class="band"><span class="name"><span class="dot" style="background:#4a5157"></span>Idle</span><span class="range mono">Low acceleration</span></div>
-    <div class="band"><span class="name"><span class="dot" style="background:var(--calm)"></span>Light throttle</span><span class="range mono">Gentle acceleration</span></div>
-    <div class="band"><span class="name"><span class="dot" style="background:var(--brisk)"></span>High RPM</span><span class="range mono">Hard acceleration</span></div>
-    <div class="band"><span class="name"><span class="dot" style="background:var(--fast)"></span>Redline</span><span class="range mono">Very hard acceleration</span></div>
+    <div class="band"><span class="name"><span class="dot" style="background:#4a5157"></span>Idle</span><span class="range mono">No acceleration</span></div>
+    <div class="band"><span class="name"><span class="dot" style="background:var(--brisk)"></span>Accelerating</span><span class="range mono">Any acceleration</span></div>
   </div>
 
   <details>
     <summary>How it works</summary>
-    <p>Tap Start engine to play the startup sound. After the startup sound finishes, the engine loop plays continuously — its pitch eases up and down like real RPM as you accelerate and coast, and its volume also steps up through 5 levels as you push harder, from a quieter idle up to full volume at redline.</p>
+    <p>Tap Start engine to play the startup sound. After the startup sound finishes, the idle sound loops by default. As soon as the accelerometer detects any real acceleration, it crossfades into a separate rev sound; easing back off crossfades back to idle.</p>
     <p>This uses the phone's accelerometer, so it reacts to changes in motion rather than measuring actual vehicle speed.</p>
     <p><b>iPhone:</b> Open this page in Safari. Tap Start engine and allow Motion & Orientation Access if prompted.</p>
   </details>
@@ -155,7 +153,8 @@
   <footer>Motion sensor only. No GPS is used.</footer>
 
   <audio id="startupAudio" src="startup.mp3" preload="auto"></audio>
-  <audio id="engineAudio" src="Longest Idle.m4a" preload="auto" loop></audio>
+  <audio id="idleAudio" src="Longest Idle.m4a" preload="auto" loop></audio>
+  <audio id="revAudio" src="rev.mp3" preload="auto" loop></audio>
 <script>
 (function(){
   const accelNum = document.getElementById('accelNum');
@@ -165,122 +164,90 @@
   const toggleBtn = document.getElementById('toggleBtn');
   const statusEl = document.getElementById('status');
   const startupAudio = document.getElementById('startupAudio');
-  const engineAudio = document.getElementById('engineAudio');
+  const idleAudio = document.getElementById('idleAudio');
+  const revAudio = document.getElementById('revAudio');
 
   let running = false;
   let motionHandler = null;
   let smoothedAccel = 0;
   let engineStarted = false;
-  let rpm = 0; // 0..1 eased "engine speed" used for pitch
 
-  // Band edges across the 0–5 accelerometer range. 5 levels -> 5 volumes.
-  // Band i covers [BAND_EDGES[i], BAND_EDGES[i+1]).
-  const BAND_EDGES = [0, 1, 2, 3, 4, Infinity];
+  // Any accel above this counts as "accelerating" and plays rev.mp3.
+  // A small dead zone above 0 avoids constant sensor-noise flicker.
+  const ACCEL_ON = 0.08;
+  const ACCEL_OFF = 0.03; // must drop clearly below ACCEL_ON to go back to idle
 
-  // Volume at each band. Small, gentle steps up as acceleration increases.
-  const BAND_VOLUMES = [0.7, 0.78, 0.86, 0.93, 1.0];
+  // How long (ms) the new state must be sustained before switching.
+  const SWITCH_DELAY = 80;
 
-  // Require the signal to sit clearly past a boundary before switching,
-  // so hovering right at an edge doesn't flicker the volume back and forth.
-  const HYSTERESIS = 0.15;
+  // Crossfade time in ms.
+  const FADE_MS = 150;
 
-  // How long (ms) a new band must be sustained before we actually switch.
-  const SWITCH_DELAY = 120;
-
-  // Volume ramp time in ms.
-  const FADE_MS = 220;
-
-  // Pitch (playbackRate) range — idle vs redline. Wide range so the
-  // difference is clearly audible across the full accelerometer sweep.
-  const IDLE_RATE = 0.7;
-  const MAX_RATE = 2.6;
-
-  // How quickly rpm eases toward the current throttle target (higher = snappier revving).
-  const RPM_RISE = 0.25;
-  // How quickly rpm falls back down when you ease off the throttle.
-  const RPM_FALL = 0.07;
-
-  let currentBand = 0;
-  let pendingBand = null;
+  let isRevving = false;
+  let pendingState = null;
   let pendingSince = 0;
-  let fadeTimer = null;
+  let fadeTimers = new Map();
 
-  const labels = ['IDLE', 'LIGHT THROTTLE', 'MID RPM', 'HIGH RPM', 'REDLINE'];
-  const colors = ['#4a5157', '#3fd6b8', '#3fd6b8', '#f2b544', '#ef5b5b'];
-
-  function bandForAccel(accel){
-    for(let i = 0; i < BAND_EDGES.length - 1; i++){
-      const lo = BAND_EDGES[i], hi = BAND_EDGES[i+1];
-      if(accel >= lo && accel < hi) return i;
-    }
-    return BAND_VOLUMES.length - 1;
-  }
-
-  function fadeVolumeTo(targetVolume, ms){
-    if(fadeTimer) clearInterval(fadeTimer);
-    const startVolume = engineAudio.volume;
+  function fadeTo(track, targetVolume, ms){
+    if(fadeTimers.has(track)) clearInterval(fadeTimers.get(track));
+    const startVolume = track.volume;
     const startTime = performance.now();
 
-    fadeTimer = setInterval(() => {
+    const id = setInterval(() => {
       const t = Math.min(1, (performance.now() - startTime) / ms);
-      engineAudio.volume = startVolume + (targetVolume - startVolume) * t;
+      track.volume = startVolume + (targetVolume - startVolume) * t;
       if(t >= 1){
-        clearInterval(fadeTimer);
-        fadeTimer = null;
+        clearInterval(fadeTimers.get(track));
+        fadeTimers.delete(track);
+        if(targetVolume === 0) track.pause();
       }
     }, 30);
+    fadeTimers.set(track, id);
   }
 
-  function switchBand(newBand){
-    currentBand = newBand;
-    fadeVolumeTo(BAND_VOLUMES[newBand], FADE_MS);
+  async function switchState(revving){
+    isRevving = revving;
+    const nextTrack = revving ? revAudio : idleAudio;
+    const otherTrack = revving ? idleAudio : revAudio;
 
-    accelLabel.textContent = labels[newBand];
-    ring.style.setProperty('--accent', colors[newBand]);
-    pulse.style.setProperty('--accent', colors[newBand]);
+    if(nextTrack.paused){
+      nextTrack.currentTime = 0;
+      nextTrack.volume = 0;
+      try{ await nextTrack.play(); }catch(e){
+        statusEl.textContent = 'Could not play engine sound: ' + e.message;
+        return;
+      }
+    }
+    fadeTo(nextTrack, 1, FADE_MS);
+    fadeTo(otherTrack, 0, FADE_MS);
+
+    accelLabel.textContent = revving ? 'ACCELERATING' : 'IDLE';
+    const color = revving ? '#f2b544' : '#4a5157';
+    ring.style.setProperty('--accent', color);
+    pulse.style.setProperty('--accent', color);
   }
 
   function updateEngine(accel){
     accelNum.textContent = accel.toFixed(1);
 
-    const targetBand = bandForAccel(accel);
+    const targetState = isRevving
+      ? accel > ACCEL_OFF   // stay revving until it clearly drops off
+      : accel > ACCEL_ON;   // start revving once clearly above the dead zone
 
-    // Hysteresis: only consider switching if we're clearly past the edge
-    // of the current band (not just barely over the line).
-    const lo = BAND_EDGES[currentBand], hi = BAND_EDGES[currentBand + 1];
-    const clearlyOut =
-      (targetBand > currentBand && accel > hi + HYSTERESIS) ||
-      (targetBand < currentBand && accel < lo - HYSTERESIS);
-
-    if(targetBand === currentBand){
-      pendingBand = null;
-    } else if(clearlyOut){
+    if(targetState === isRevving){
+      pendingState = null;
+    } else {
       const now = performance.now();
-      if(pendingBand !== targetBand){
-        pendingBand = targetBand;
+      if(pendingState !== targetState){
+        pendingState = targetState;
         pendingSince = now;
       } else if(now - pendingSince >= SWITCH_DELAY){
-        switchBand(targetBand);
-        pendingBand = null;
+        switchState(targetState);
+        pendingState = null;
       }
-    } else {
-      pendingBand = null;
     }
 
-    // Continuous "rev" pitch: eases toward the current throttle level,
-    // and decays back down on its own when you're not accelerating —
-    // just like a real engine's RPM needle.
-    const throttle = Math.max(0, Math.min(1, accel / BAND_EDGES[BAND_EDGES.length - 2]));
-    if(throttle > rpm){
-      rpm += (throttle - rpm) * RPM_RISE;
-    } else {
-      rpm += (throttle - rpm) * RPM_FALL;
-    }
-    if(engineStarted){
-      engineAudio.playbackRate = IDLE_RATE + rpm * (MAX_RATE - IDLE_RATE);
-    }
-
-    const pct = Math.max(0, Math.min(1, accel / BAND_EDGES[BAND_EDGES.length - 2]));
+    const pct = Math.max(0, Math.min(1, accel / 3));
     ring.style.setProperty('--pct', (pct * 100).toFixed(1));
     pulse.style.setProperty('--pulse-scale', (1 + pct * 0.12).toFixed(3));
   }
@@ -320,7 +287,7 @@
       smoothedAccel * 0.72 + magnitude * 0.28;
 
     if(engineStarted){
-      if(!engineAudio.paused){
+      if(!idleAudio.paused || !revAudio.paused){
         statusEl.textContent = 'Engine running — motion sensor active';
       }
       updateEngine(smoothedAccel);
@@ -367,14 +334,11 @@
     if(!running) return;
 
     try{
-      currentBand = 0;
-      rpm = 0;
-      engineAudio.currentTime = 0;
-      engineAudio.loop = true;
-      engineAudio.volume = BAND_VOLUMES[0];
-      engineAudio.playbackRate = IDLE_RATE;
+      isRevving = false;
+      idleAudio.currentTime = 0;
+      idleAudio.volume = 1.0;
       engineStarted = true;
-      await engineAudio.play();
+      await idleAudio.play();
       statusEl.textContent =
         'Engine running — motion sensor active';
     }catch(e){
@@ -387,8 +351,8 @@
     if(!running){
       running = true;
       engineStarted = false;
-      currentBand = 0;
-      pendingBand = null;
+      isRevving = false;
+      pendingState = null;
       smoothedAccel = 0;
 
       toggleBtn.textContent = 'Stop engine';
@@ -399,18 +363,21 @@
       startMotion();
 
       // iOS Safari only allows audio.play() from code (like our later
-      // "ended" handler) if that element has already been played once
-      // directly from a user gesture. So "unlock" engineAudio here,
-      // muted and instantly paused, using this real tap.
-      try{
-        engineAudio.muted = true;
-        await engineAudio.play();
-        engineAudio.pause();
-        engineAudio.currentTime = 0;
-        engineAudio.muted = false;
-        engineAudio.volume = 0;
-      }catch(e){
-        // If this fails we'll surface it later when the real play() runs.
+      // "ended" handler, or mid-drive switches) if that element has
+      // already been played once directly from a user gesture. So
+      // "unlock" both tracks here, muted and instantly paused, using
+      // this real tap.
+      for(const track of [idleAudio, revAudio]){
+        try{
+          track.muted = true;
+          await track.play();
+          track.pause();
+          track.currentTime = 0;
+          track.muted = false;
+          track.volume = 0;
+        }catch(e){
+          // If this fails we'll surface it later when the real play() runs.
+        }
       }
 
       // Play startup sound first. The engine sound waits for "ended".
@@ -431,17 +398,17 @@
       startupAudio.pause();
       startupAudio.currentTime = 0;
 
-      if(fadeTimer){
-        clearInterval(fadeTimer);
-        fadeTimer = null;
+      for(const track of [idleAudio, revAudio]){
+        if(fadeTimers.has(track)){
+          clearInterval(fadeTimers.get(track));
+          fadeTimers.delete(track);
+        }
+        track.pause();
+        track.currentTime = 0;
+        track.volume = 0;
       }
-      engineAudio.pause();
-      engineAudio.currentTime = 0;
-      engineAudio.volume = 0;
-      engineAudio.playbackRate = IDLE_RATE;
-      rpm = 0;
-      currentBand = 0;
-      pendingBand = null;
+      isRevving = false;
+      pendingState = null;
       smoothedAccel = 0;
 
       accelNum.textContent = '0.0';
