@@ -172,9 +172,14 @@
   let smoothedAccel = 0;
   let engineStarted = false;
 
+  // How much (seconds) before the startup sound actually ends to start
+  // the idle loop underneath it, so there's no dead-air gap between them.
+  const STARTUP_OVERLAP = 0.4;
+  let idleStartTriggered = false;
+
   // Any accel above this counts as "accelerating" and plays rev.mp3.
   const ACCEL_ON = 3;
-  const ACCEL_OFF = 2.7; // must drop clearly below ACCEL_ON to go back to idle
+  const ACCEL_OFF = 3; // cuts back to idle as soon as accel drops below this
 
   // How long (ms) the new state must be sustained before switching.
   const SWITCH_DELAY = 80;
@@ -328,9 +333,11 @@
     }
   }
 
-  // Start engine only after the startup sound has fully finished.
-  startupAudio.addEventListener('ended', async function(){
-    if(!running) return;
+  // Start the idle loop a touch before the startup sound actually
+  // finishes, so the two overlap slightly instead of leaving a gap.
+  async function startIdleEngine(){
+    if(idleStartTriggered) return;
+    idleStartTriggered = true;
 
     try{
       isRevving = false;
@@ -344,6 +351,21 @@
       statusEl.textContent =
         'Could not play engine sound: ' + e.message;
     }
+  }
+
+  startupAudio.addEventListener('timeupdate', function(){
+    if(!running || idleStartTriggered) return;
+    const d = startupAudio.duration;
+    if(d && d - startupAudio.currentTime <= STARTUP_OVERLAP){
+      startIdleEngine();
+    }
+  });
+
+  // Fallback in case timeupdate granularity or a missing duration means
+  // the overlap trigger above never fires.
+  startupAudio.addEventListener('ended', function(){
+    if(!running) return;
+    startIdleEngine();
   });
 
   toggleBtn.addEventListener('click', async function(){
@@ -351,6 +373,7 @@
       running = true;
       engineStarted = false;
       isRevving = false;
+      idleStartTriggered = false;
       pendingState = null;
       smoothedAccel = 0;
 
@@ -407,6 +430,7 @@
         track.volume = 0;
       }
       isRevving = false;
+      idleStartTriggered = false;
       pendingState = null;
       smoothedAccel = 0;
 
