@@ -190,14 +190,15 @@
   // Volume ramp time in ms.
   const FADE_MS = 220;
 
-  // Pitch (playbackRate) range — idle vs redline.
-  const IDLE_RATE = 0.9;
-  const MAX_RATE = 1.85;
+  // Pitch (playbackRate) range — idle vs redline. Wide range so the
+  // difference is clearly audible across the full accelerometer sweep.
+  const IDLE_RATE = 0.7;
+  const MAX_RATE = 2.6;
 
   // How quickly rpm eases toward the current throttle target (higher = snappier revving).
-  const RPM_RISE = 0.12;
+  const RPM_RISE = 0.25;
   // How quickly rpm falls back down when you ease off the throttle.
-  const RPM_FALL = 0.045;
+  const RPM_FALL = 0.07;
 
   let currentBand = 0;
   let pendingBand = null;
