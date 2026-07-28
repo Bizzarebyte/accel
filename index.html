@@ -516,8 +516,8 @@ footer {
 
   <p>
     Tap Start engine to play the startup sound.
-    The idle engine sound starts playing at full volume
-    shortly before the startup sound ends, preventing
+    The idle engine sound starts playing shortly
+    before the startup sound ends, preventing
     a silence gap. When the motion sensor detects
     sustained acceleration, the system smoothly fades
     into the rev sound. When acceleration decreases,
@@ -661,12 +661,27 @@ const fadeTimers = new Map();
    0.35 means the idle sound begins
    0.35 seconds BEFORE startup.mp3 ends.
 
-   The idle sound starts at FULL VOLUME.
+   The idle sound starts at IDLE_VOLUME (see below).
 
    There is NO fade-in.
 */
 
 const IDLE_OVERLAP = 0.35;
+
+
+/*
+   VOLUME LEVELS
+
+   STARTUP_VOLUME: startup.mp3 — set to max.
+   IDLE_VOLUME: idle loop — lowered slightly from max.
+   REV_VOLUME: rev loop — set to max.
+*/
+
+const STARTUP_VOLUME = 1.0;
+
+const IDLE_VOLUME = 0.7;
+
+const REV_VOLUME = 1.0;
 
 
 /*
@@ -887,7 +902,7 @@ async function setRevving(revving) {
     START REV SOUND
 
     The rev sound begins at 0 volume
-    and smoothly fades up.
+    and smoothly fades up to REV_VOLUME.
 
     IDLE remains playing underneath.
   */
@@ -917,12 +932,12 @@ async function setRevving(revving) {
     }
 
     /*
-      Smoothly bring REV up.
+      Smoothly bring REV up to max.
     */
 
     fadeAudio(
       revAudio,
-      1,
+      REV_VOLUME,
       FADE_TIME
     );
 
@@ -970,7 +985,8 @@ async function setRevving(revving) {
       We do NOT restart idle.
 
       We simply fade the rev sound out
-      while bringing idle back up.
+      while bringing idle back up to
+      IDLE_VOLUME.
     */
 
     if (
@@ -995,12 +1011,12 @@ async function setRevving(revving) {
 
 
     /*
-      Smoothly bring IDLE back.
+      Smoothly bring IDLE back to its level.
     */
 
     fadeAudio(
       idleAudio,
-      1,
+      IDLE_VOLUME,
       FADE_TIME
     );
 
@@ -1503,19 +1519,19 @@ async function startIdleSound() {
 
     IMPORTANT:
 
-    We set the volume to 1 BEFORE calling play().
+    We set the volume to IDLE_VOLUME BEFORE calling play().
 
     This means there is NO fade-in.
 
-    The idle sound starts normally
-    at full volume.
+    The idle sound starts immediately
+    at its set level.
   */
 
   idleAudio.currentTime =
     0;
 
   idleAudio.volume =
-    1;
+    IDLE_VOLUME;
 
 
   const success =
@@ -1689,7 +1705,7 @@ async function startEngine() {
 
 
   startupAudio.volume =
-    1;
+    STARTUP_VOLUME;
 
   idleAudio.volume =
     0;
@@ -1972,7 +1988,7 @@ function stopEngine() {
   */
 
   startupAudio.volume =
-    1;
+    STARTUP_VOLUME;
 
   idleAudio.volume =
     0;
