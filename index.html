@@ -659,15 +659,15 @@ const fadeTimers = new Map();
 /*
    HOW EARLY THE IDLE SOUND STARTS.
 
-   0.35 means the idle sound begins
-   0.35 seconds BEFORE startup.mp3 ends.
+   2.5 means the idle sound begins
+   2.5 seconds BEFORE startup.mp3 ends.
 
    The idle sound starts at IDLE_VOLUME (see below).
 
    There is NO fade-in.
 */
 
-const IDLE_OVERLAP = 0.35;
+const IDLE_OVERLAP = 2.5;
 
 
 /*
@@ -698,16 +698,21 @@ const REV_VOLUME = 1.0;
 
 /*
    Acceleration needed to start revving.
+
+   Once triggered, rev.mp3 always plays
+   to completion — see processAcceleration,
+   where REV_OFF is no longer used to cut
+   it off early.
 */
 
-const REV_ON = 2.5;
+const REV_ON = 3;
 
 
 /*
-   Acceleration needed to stop revving.
-
-   Lower than REV_ON creates hysteresis,
-   preventing rapid switching.
+   No longer used to interrupt a playing
+   rev sound. Kept only in case a future
+   change wants acceleration-based cutoff
+   back.
 */
 
 const REV_OFF = 1.5;
@@ -1281,9 +1286,17 @@ function processAcceleration(
     isRevving
   ) {
 
+    /*
+      Once rev.mp3 has started, let it
+      play all the way through — do not
+      let a drop in acceleration cut it
+      off early. It only stops via
+      finishRevIntoIdle(), when the
+      sound naturally reaches its end.
+    */
+
     desiredRevState =
-      smoothedAcceleration >
-      REV_OFF;
+      true;
 
   }
 
