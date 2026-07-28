@@ -551,7 +551,7 @@ footer {
 
      startup.mp3
      Longest Idle.m4a
-     rev.m4a
+     rev.mp3
 ======================================================== -->
 
 
@@ -572,7 +572,7 @@ footer {
 
 <audio
   id="revAudio"
-  src="./rev.m4a"
+  src="./rev.mp3"
   preload="auto"
   loop
 ></audio>
@@ -925,7 +925,7 @@ async function setRevving(revving) {
       isRevving = false;
 
       statusEl.textContent =
-        "Could not play rev.m4a.";
+        "Could not play rev.mp3.";
 
       return;
 
@@ -2164,12 +2164,12 @@ revAudio.addEventListener(
   function() {
 
     console.error(
-      "Could not load rev.m4a",
+      "Could not load rev.mp3",
       revAudio.error
     );
 
     statusEl.textContent =
-      "ERROR: rev.m4a could not be loaded.";
+      "ERROR: rev.mp3 could not be loaded.";
 
   }
 
