@@ -574,7 +574,6 @@ footer {
   id="revAudio"
   src="./rev.mp3"
   preload="auto"
-  loop
 ></audio>
 
 
@@ -647,6 +646,8 @@ let pendingStateTime = 0;
 
 let idleStartTimer = null;
 
+let revEndTimer = null;
+
 const fadeTimers = new Map();
 
 
@@ -667,6 +668,17 @@ const fadeTimers = new Map();
 */
 
 const IDLE_OVERLAP = 0.35;
+
+
+/*
+   HOW EARLY THE IDLE SOUND RETURNS.
+
+   0.35 means idle starts fading back in
+   0.35 seconds BEFORE rev.mp3 ends,
+   so there is no gap once rev finishes.
+*/
+
+const REV_OVERLAP = 0.35;
 
 
 /*
@@ -886,6 +898,15 @@ async function setRevving(revving) {
     revving;
 
 
+  /*
+    Any pending "rev is about to end"
+    check is no longer relevant once
+    the state changes explicitly.
+  */
+
+  cancelRevEndTimer();
+
+
   const nextTrack =
     revving
       ? revAudio
@@ -967,86 +988,261 @@ async function setRevving(revving) {
       "#f2b544"
     );
 
+
+    /*
+      Start watching rev.mp3's playback
+      position so idle can fade back in
+      a little before rev naturally ends,
+      leaving no gap of silence.
+    */
+
+    scheduleRevEnd();
+
   }
 
 
   /*
     RETURN TO IDLE
+
+    (triggered by acceleration dropping
+    below REV_OFF)
   */
 
   else {
 
-    /*
-      IMPORTANT:
+    await returnToIdle();
 
-      Idle is already playing underneath
-      the rev sound in normal operation.
+  }
 
-      We do NOT restart idle.
+}
 
-      We simply fade the rev sound out
-      while bringing idle back up to
-      IDLE_VOLUME.
-    */
 
-    if (
-      idleAudio.paused
-    ) {
+/* =========================================================
+   RETURN TO IDLE
 
-      idleAudio.volume = 0;
+   Shared by:
 
-      const success =
-        await playAudio(idleAudio);
+   - setRevving(false), triggered when
+     acceleration drops
 
-      if (!success) {
+   - the rev.mp3 end-of-playback overlap,
+     triggered when the rev sound is
+     about to finish on its own
+========================================================= */
 
-        statusEl.textContent =
-          "Could not play Longest Idle.m4a.";
+async function returnToIdle() {
 
-        return;
+  /*
+    IMPORTANT:
 
-      }
+    Idle is already playing underneath
+    the rev sound in normal operation.
+
+    We do NOT restart idle.
+
+    We simply fade the rev sound out
+    while bringing idle back up to
+    IDLE_VOLUME.
+  */
+
+  if (
+    idleAudio.paused
+  ) {
+
+    idleAudio.volume = 0;
+
+    const success =
+      await playAudio(idleAudio);
+
+    if (!success) {
+
+      statusEl.textContent =
+        "Could not play Longest Idle.m4a.";
+
+      return;
 
     }
 
+  }
 
-    /*
-      Smoothly bring IDLE back to its level.
-    */
 
-    fadeAudio(
-      idleAudio,
-      IDLE_VOLUME,
-      FADE_TIME
+  /*
+    Smoothly bring IDLE back to its level.
+  */
+
+  fadeAudio(
+    idleAudio,
+    IDLE_VOLUME,
+    FADE_TIME
+  );
+
+
+  /*
+    Smoothly fade REV away.
+  */
+
+  fadeAudio(
+    revAudio,
+    0,
+    FADE_TIME
+  );
+
+
+  accelLabel.textContent =
+    "IDLE";
+
+
+  ring.style.setProperty(
+    "--accent",
+    "#4a5157"
+  );
+
+  pulse.style.setProperty(
+    "--accent",
+    "#4a5157"
+  );
+
+}
+
+
+/* =========================================================
+   SCHEDULE REV END OVERLAP
+
+   Watches rev.mp3's playback position.
+
+   When it is REV_OVERLAP seconds from
+   naturally ending, idle is smoothly
+   brought back in ahead of time, so
+   there is no silence gap once rev
+   finishes.
+
+   Mirrors scheduleIdleOverlap, which
+   does the same thing for the
+   startup -> idle transition.
+========================================================= */
+
+function cancelRevEndTimer() {
+
+  if (
+    revEndTimer
+  ) {
+
+    clearTimeout(
+      revEndTimer
     );
 
-
-    /*
-      Smoothly fade REV away.
-    */
-
-    fadeAudio(
-      revAudio,
-      0,
-      FADE_TIME
-    );
-
-
-    accelLabel.textContent =
-      "IDLE";
-
-
-    ring.style.setProperty(
-      "--accent",
-      "#4a5157"
-    );
-
-    pulse.style.setProperty(
-      "--accent",
-      "#4a5157"
-    );
+    revEndTimer =
+      null;
 
   }
+
+}
+
+
+function scheduleRevEnd() {
+
+  if (
+    !running ||
+    !isRevving
+  ) {
+
+    return;
+
+  }
+
+
+  const duration =
+    revAudio.duration;
+
+
+  if (
+    !duration ||
+    !isFinite(duration)
+  ) {
+
+    revEndTimer =
+      setTimeout(
+        scheduleRevEnd,
+        50
+      );
+
+    return;
+
+  }
+
+
+  const remaining =
+    duration -
+    revAudio.currentTime;
+
+
+  if (
+    remaining <=
+    REV_OVERLAP
+  ) {
+
+    finishRevIntoIdle();
+
+    return;
+
+  }
+
+
+  revEndTimer =
+    setTimeout(
+
+      scheduleRevEnd,
+
+      Math.min(
+        50,
+        Math.max(
+          10,
+          (
+            remaining -
+            REV_OVERLAP
+          ) *
+          1000
+        )
+      )
+
+    );
+
+}
+
+
+/* =========================================================
+   FINISH REV INTO IDLE
+
+   Called when rev.mp3 is about to
+   reach the end of its own playback
+   (as opposed to acceleration
+   dropping below REV_OFF).
+========================================================= */
+
+async function finishRevIntoIdle() {
+
+  if (
+    !isRevving
+  ) {
+
+    /*
+      Already handled by the
+      acceleration-based path.
+    */
+
+    return;
+
+  }
+
+
+  isRevving =
+    false;
+
+
+  cancelRevEndTimer();
+
+
+  await returnToIdle();
 
 }
 
@@ -1915,6 +2111,13 @@ function stopEngine() {
 
 
   /*
+    Cancel rev-end overlap timer.
+  */
+
+  cancelRevEndTimer();
+
+
+  /*
     Remove motion listener.
   */
 
@@ -2170,6 +2373,36 @@ revAudio.addEventListener(
 
     statusEl.textContent =
       "ERROR: rev.mp3 could not be loaded.";
+
+  }
+
+);
+
+
+/*
+  FALLBACK:
+
+  If the rev-end overlap timer ever
+  misses (e.g. the tab was backgrounded
+  and timers were throttled), this makes
+  sure idle still comes back in as soon
+  as rev.mp3 actually ends, instead of
+  being left in silence.
+*/
+
+revAudio.addEventListener(
+
+  "ended",
+
+  function() {
+
+    if (
+      isRevving
+    ) {
+
+      finishRevIntoIdle();
+
+    }
 
   }
 
